@@ -37,6 +37,6 @@ libraryDependencies ++= {
   )
 }
 
-//unmanagedResourceDirectories in Compile <++= baseDirectory {
-//  base => Seq(base / "src/main/webapp")
-//}
+unmanagedResourceDirectories in Compile <++= baseDirectory {
+  base => Seq(base / "src/main/webapp")
+}
