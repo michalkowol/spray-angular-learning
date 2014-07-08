@@ -29,10 +29,4 @@ class SpraySpec extends FlatSpec with Matchers with MockitoSugar with ScalatestR
       responseAs[String] should include ("atlantic")
     }
   }
-
-  it  should "get store-products.json" in {
-    Get("/api/products") ~> Aquarium.staticResources ~> check {
-      responseAs[String] should include ("Bloodstone")
-    }
-  }
 }

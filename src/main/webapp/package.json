@@ -1,13 +1,22 @@
 {
-  "name": "gulp-learning",
-  "description": "Learning Gulp",
-  "author": "Michal Kowol <michal.kowol@gmail.com>",
-  "version": "0.0.1",
-  "devDependencies": {
-    "gulp": "3.8.x",
-    "gulp-connect": "2.0.x",
-    "proxy-middleware": "0.5.x",
-    "url": "0.10.x"
-  },
-  "engine": "node >= 0.4.1"
+    "devDependencies": {
+        "gulp": "3.8.x",
+        "gulp-connect": "2.0.x",
+        "proxy-middleware": "0.5.x",
+        "url": "0.10.x",
+        "karma": "0.x",
+        "bower": "1.3.x",
+        "karma-junit-reporter": "0.2.x"
+    },
+    "scripts": {
+        "postinstall": "bower install",
+
+        "prestart": "npm install",
+        "start": "gulp",
+
+        "pretest": "npm install",
+        "test": "karma start test/karma.conf.js",
+        "test-single-run": "karma start test/karma.conf.js  --single-run"
+    },
+    "engine": "node >= 0.4.1"
 }

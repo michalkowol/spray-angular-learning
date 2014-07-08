@@ -1,6 +1,0 @@
-npm install -g gulp
-npm install -g npm-check-updates
-npm-check-updates
-npm-check-updates -g
-npm install
-gulp
