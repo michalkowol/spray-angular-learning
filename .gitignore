@@ -1,8 +1,8 @@
 *.class
 *.log
 
-# sbt specific
-dist/*
+# sbt
+dist/
 target/
 lib_managed/
 src_managed/
@@ -13,5 +13,6 @@ project/plugins/project/
 .idea/
 *.iml
 
-node_modules
-bower_components
+# node.js
+node_modules/
+bower_components/
