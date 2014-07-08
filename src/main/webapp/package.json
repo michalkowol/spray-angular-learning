@@ -5,6 +5,7 @@
     "gulp-clean": "0.3.x",
     "gulp-connect": "2.0.x",
     "gulp-ignore": "1.1.x",
+    "gulp-imagemin": "0.6.x",
     "gulp-jshint": "1.6.x",
     "gulp-minify-css": "0.3.x",
     "gulp-minify-html": "0.1.x",

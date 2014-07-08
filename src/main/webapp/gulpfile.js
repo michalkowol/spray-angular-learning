@@ -3,6 +3,7 @@ var clean = require('gulp-clean');
 var uglify = require('gulp-uglify');
 var minifyhtml = require('gulp-minify-html');
 var minifycss = require('gulp-minify-css');
+var minifyimg = require('gulp-imagemin');
 var connect = require('gulp-connect');
 var jshint = require('gulp-jshint');
 var ignore = require('gulp-ignore');
@@ -31,9 +32,15 @@ gulp.task('minify-js', function () {
         .pipe(gulp.dest('./dist/js/'));
 });
 
+gulp.task('minify-img', function () {
+    gulp.src('./app/img/**')
+        .pipe(minifyimg())
+        .pipe(gulp.dest('./dist/img/'));
+});
+
 gulp.task('copy', function () {
     gulp.src('./app/**')
-        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html']))
+        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/img/**']))
         .pipe(gulp.dest('./dist/'));
 });
 
@@ -68,6 +75,6 @@ gulp.task('watch', function () {
     gulp.watch(['./app/**'], ['reload']);
 });
 
-gulp.task('minify', ['minify-css', 'minify-html', 'minify-js', 'copy']);
+gulp.task('minify', ['minify-css', 'minify-html', 'minify-js', 'minify-img', 'copy']);
 gulp.task('dist', ['lint', 'minify']);
 gulp.task('default', ['connect', 'watch']);
