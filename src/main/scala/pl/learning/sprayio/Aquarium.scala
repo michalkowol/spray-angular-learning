@@ -67,10 +67,12 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
 
   lazy val staticResources = {
     path("") {
-      getFromResource("app/index.html")
-    } ~ {
-      getFromResourceDirectory("app")
-    }
+      getFromResource("index.html")
+    } ~
+    path("api" / "products") {
+      getFromResource("js/store-products.json")
+    } ~
+    getFromResourceDirectory("")
   }
 
   startServer(interface = "0.0.0.0", port = 8080) {

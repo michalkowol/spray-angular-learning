@@ -1,0 +1,13 @@
+{
+  "name": "gulp-learning",
+  "description": "Learning Gulp",
+  "author": "Michal Kowol <michal.kowol@gmail.com>",
+  "version": "0.0.1",
+  "devDependencies": {
+    "gulp": "3.8.x",
+    "gulp-connect": "2.0.x",
+    "proxy-middleware": "0.5.x",
+    "url": "0.10.x"
+  },
+  "engine": "node >= 0.4.1"
+}
