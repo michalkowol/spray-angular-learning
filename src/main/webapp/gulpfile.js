@@ -31,25 +31,55 @@ gulp.task('prettify', function () {
 });
 
 gulp.task('less', function () {
-    return gulp.src('./app/less/**/*.less')
+    return gulp.src('./app/**/*.less')
         .pipe(less())
-        .pipe(gulp.dest('./app/generated/css/'));
+        .pipe(gulp.dest('./target/'))
+        .pipe(connect.reload());
 });
 
 gulp.task('jade', function () {
-    return gulp.src('./app/jade/**/*.jade')
-        .pipe(jade())
-        .pipe(gulp.dest('./app//generated/html/'));
+    return gulp.src('./app/**/*.jade')
+        .pipe(jade({pretty: true}))
+        .pipe(gulp.dest('./target/'))
+        .pipe(connect.reload());
 });
 
 gulp.task('coffee', function () {
-    return gulp.src('./app/coffee/**/*.coffee')
+    return gulp.src('./app/**/*.coffee')
         .pipe(coffee({bare: true}).on('error', gutil.log))
-        .pipe(gulp.dest('./app/generated/js/'));
+        .pipe(gulp.dest('./target/'))
+        .pipe(connect.reload());
+});
+
+gulp.task('copy-js', function () {
+    return gulp.src('./app/**/*.js')
+        .pipe(gulp.dest('./target/'))
+        .pipe(connect.reload());
+});
+
+gulp.task('copy-css', function () {
+    return gulp.src('./app/**/*.css')
+        .pipe(gulp.dest('./target/'))
+        .pipe(connect.reload());
+});
+
+gulp.task('copy-html', function () {
+    return gulp.src('./app/**/*.html')
+        .pipe(gulp.dest('./target/'))
+        .pipe(connect.reload());
+});
+
+gulp.task('copy-src', ['copy-js', 'copy-css', 'copy-html']);
+
+gulp.task('copy-assets', function () {
+    return gulp.src('./app/**')
+        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/*.jade', '**/*.less', '**/*.coffee', '**/bower_components/**']))
+        .pipe(gulp.dest('./target/'))
+        .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('usemin', function () {
-    return gulp.src('./app/**/*.html')
+    return gulp.src('./target/**/*.html')
         .pipe(usemin({
             css: [minifycss(), 'concat', prefix('last 2 versions')],
             js: [ngmin({dynamic: true}), uglify(), rev()]
@@ -57,21 +87,22 @@ gulp.task('usemin', function () {
         .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('copy', function () {
-    return gulp.src('./app/**')
-        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/*.jade', '**/less/**', '**/bower_components/**']))
-        .pipe(gulp.dest('./dist/'));
+gulp.task('clean-target', function () {
+    return gulp.src(['./target/'], {read: false})
+        .pipe(clean());
 });
 
-gulp.task('clean', function () {
+gulp.task('clean-dist', function () {
     return gulp.src(['./dist/'], {read: false})
         .pipe(clean());
 });
 
+gulp.task('clean', ['clean-target', 'clean-dist']);
+
 gulp.task('karma-unit', function () {
     return gulp.src('./test/unit/**.js')
         .pipe(karma({
-            configFile: './test/karma.conf.js',
+            configFile: './test/test/karma.conf.js',
             action: 'run'
         }))
         .on('error', function (err) {
@@ -82,7 +113,7 @@ gulp.task('karma-unit', function () {
 gulp.task('karma-e2e', function () {
     return gulp.src('./test/e2e/**.js')
         .pipe(karma({
-            configFile: './test/karma.conf.js',
+            configFile: './test/test/karma.conf.js',
             action: 'run'
         }))
         .on('error', function (err) {
@@ -92,7 +123,7 @@ gulp.task('karma-e2e', function () {
 
 gulp.task('connect', function () {
     return connect.server({
-        root: 'app',
+        root: 'target',
         port: 8081,
         livereload: true,
         middleware: function () {
@@ -107,33 +138,23 @@ gulp.task('connect', function () {
     });
 });
 
-gulp.task('reload', function () {
-    return gulp.src('./app/**')
-        .pipe(connect.reload());
-});
-
-gulp.task('reload', function () {
-    return gulp.src('./app/**')
-        .pipe(connect.reload());
-});
-
-gulp.task('prettify-reload', function (callback) {
-    runSequence('prettify', 'reload', callback);
-});
-
 gulp.task('watch', function () {
-    gulp.watch(['./app/less/**/*.less'], ['less']);
+    gulp.watch(['./app/**/*.less'], ['less']);
     gulp.watch(['./app/**/*.jade'], ['jade']);
     gulp.watch(['./app/**/*.coffee'], ['coffee']);
-    gulp.watch(['./app/js/**/*.js'], ['jshint', 'karma-unit', 'prettify-reload']);
-    gulp.watch(['./app/css/**/*.css'], ['prettify-reload']);
-    gulp.watch(['./app/**/*.html'], ['prettify-reload']);
+    gulp.watch(['./app/**/*.js'], ['copy-js']);
+    gulp.watch(['./app/**/*.css'], ['copy-css']);
+    gulp.watch(['./app/**/*.html'], ['copy-html']);
 });
 
-gulp.task('build', ['jshint', 'less', 'jade', 'coffee']);
-gulp.task('dist', function (callback) {
-    runSequence('clean', 'build', ['usemin', 'copy'], callback);
+gulp.task('build', function (callback) {
+    runSequence('prettify', 'jshint', ['copy-src', 'copy-assets', 'less', 'jade', 'coffee'], callback);
 });
+
+gulp.task('dist', function (callback) {
+    runSequence('clean', 'build', 'usemin', callback);
+});
+
 gulp.task('default', function (callback) {
-    runSequence('prettify', 'build', ['connect', 'watch'], callback);
+    runSequence('build', ['connect', 'watch'], callback);
 });
