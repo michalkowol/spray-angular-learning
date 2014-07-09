@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html ng-app="gemStore">
+
 <head>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
-    <script type="text/javascript" src="js/products.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
+  <!-- build:css css/style.css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <!-- endbuild -->
+
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+  <!-- build:js js/app.js -->
+  <script type="text/javascript" src="js/products.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <!-- endbuild -->
 </head>
 
 <body ng-controller="StoreController as store">
-<!--  Store Header  -->
-<header>
+  <!--  Store Header  -->
+  <header>
     <h1 class="text-center">Flatlander Crafted Gems</h1>
 
     <h2 class="text-center">– an Angular store –</h2>
-</header>
+  </header>
 
-<!--  Products Container  -->
-<div class="list-group">
+  <!--  Products Container  -->
+  <div class="list-group">
     <!--  Product Container  -->
     <div class="list-group-item" ng-repeat="product in store.products">
-        <h3>{{product.name}} <em class="pull-right">{{product.price | currency}}</em></h3>
+      <h3>{{product.name}}
+        <em class="pull-right">{{product.price | currency}}</em>
+      </h3>
 
-        <!-- Image Gallery  -->
-        <product-gallery></product-gallery>
+      <!-- Image Gallery  -->
+      <product-gallery></product-gallery>
 
-        <!-- Product Tabs  -->
-        <product-tabs></product-tabs>
+      <!-- Product Tabs  -->
+      <product-tabs></product-tabs>
     </div>
 
-</div>
+  </div>
 </body>
+
 </html>

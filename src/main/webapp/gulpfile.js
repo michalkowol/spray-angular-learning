@@ -1,46 +1,55 @@
 var gulp = require('gulp');
 var clean = require('gulp-clean');
 var uglify = require('gulp-uglify');
-var minifyhtml = require('gulp-minify-html');
 var minifycss = require('gulp-minify-css');
-var minifyimg = require('gulp-imagemin');
 var connect = require('gulp-connect');
 var jshint = require('gulp-jshint');
 var ignore = require('gulp-ignore');
+var usemin = require('gulp-usemin');
+var rev = require('gulp-rev');
+var prefix = require('gulp-autoprefixer');
+var less = require('gulp-less');
+var jade = require('gulp-jade');
+var ngmin = require('gulp-ngmin');
+var prettify = require('gulp-jsbeautifier');
 
-gulp.task('lint', function () {
+gulp.task('jshint', function () {
     gulp.src('./app/js/**/*.js')
         .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+        .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('minify-css', function () {
-    gulp.src('./app/css/**/*.css')
-        .pipe(minifycss())
-        .pipe(gulp.dest('./dist/css/'));
+gulp.task('prettify', function () {
+    gulp.src(['./app/**/*.js', './app/**/*.css', './app/**/*.html'])
+        .pipe(ignore.exclude(['**/bower_components/**']))
+        .pipe(prettify({config: '.jsbeautifyrc', mode: 'VERIFY_AND_WRITE'}))
+        .pipe(gulp.dest('./app/'))
 });
 
-gulp.task('minify-html', function () {
+gulp.task('less', function () {
+    gulp.src('./app/less/**/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('./app/css/'));
+});
+
+gulp.task('jade', function () {
+    gulp.src('./app/**/*.jade')
+        .pipe(jade())
+        .pipe(gulp.dest('./app/'))
+});
+
+gulp.task('usemin', function () {
     gulp.src('./app/**/*.html')
-        .pipe(minifyhtml())
+        .pipe(usemin({
+            css: [minifycss(), 'concat', prefix('last 2 versions')],
+            js: [ngmin({dynamic: true}), uglify(), rev()]
+        }))
         .pipe(gulp.dest('./dist/'));
-});
-
-gulp.task('minify-js', function () {
-    gulp.src('./app/js/**/*.js')
-        .pipe(uglify({outSourceMap: true}))
-        .pipe(gulp.dest('./dist/js/'));
-});
-
-gulp.task('minify-img', function () {
-    gulp.src('./app/img/**')
-        .pipe(minifyimg())
-        .pipe(gulp.dest('./dist/img/'));
 });
 
 gulp.task('copy', function () {
     gulp.src('./app/**')
-        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/img/**']))
+        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/*.jade', '**/less/**', '**/bower_components/**']))
         .pipe(gulp.dest('./dist/'));
 });
 
@@ -72,9 +81,13 @@ gulp.task('reload', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(['./app/**'], ['reload']);
+    gulp.watch(['./app/less/**/*.less'], ['less']);
+    gulp.watch(['./app/**/*.jade'], ['jade']);
+    gulp.watch(['./app/js/**/*.js'], ['jshint', 'reload']);
+    gulp.watch(['./app/css/**/*.css'], ['reload']);
+    gulp.watch(['./app/**/*.html'], ['reload']);
 });
 
-gulp.task('minify', ['minify-css', 'minify-html', 'minify-js', 'minify-img', 'copy']);
-gulp.task('dist', ['lint', 'minify']);
-gulp.task('default', ['connect', 'watch']);
+gulp.task('build', ['jshint', 'less', 'jade']);
+gulp.task('dist', ['build', 'usemin', 'copy']);
+gulp.task('default', ['build', 'connect', 'watch']);
