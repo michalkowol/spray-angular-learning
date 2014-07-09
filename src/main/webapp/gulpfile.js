@@ -14,32 +14,32 @@ var ngmin = require('gulp-ngmin');
 var prettify = require('gulp-jsbeautifier');
 
 gulp.task('jshint', function () {
-    gulp.src('./app/js/**/*.js')
+    return gulp.src('./app/js/**/*.js')
         .pipe(jshint())
         .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('prettify', function () {
-    gulp.src(['./app/**/*.js', './app/**/*.css', './app/**/*.html'])
+    return gulp.src(['./app/**/*.js', './app/**/*.css', './app/**/*.html'])
         .pipe(ignore.exclude(['**/bower_components/**']))
         .pipe(prettify({config: '.jsbeautifyrc', mode: 'VERIFY_AND_WRITE'}))
         .pipe(gulp.dest('./app/'))
 });
 
 gulp.task('less', function () {
-    gulp.src('./app/less/**/*.less')
+    return gulp.src('./app/less/**/*.less')
         .pipe(less())
         .pipe(gulp.dest('./app/css/'));
 });
 
 gulp.task('jade', function () {
-    gulp.src('./app/**/*.jade')
+    return gulp.src('./app/**/*.jade')
         .pipe(jade())
         .pipe(gulp.dest('./app/'))
 });
 
 gulp.task('usemin', function () {
-    gulp.src('./app/**/*.html')
+    return gulp.src('./app/**/*.html')
         .pipe(usemin({
             css: [minifycss(), 'concat', prefix('last 2 versions')],
             js: [ngmin({dynamic: true}), uglify(), rev()]
@@ -48,18 +48,18 @@ gulp.task('usemin', function () {
 });
 
 gulp.task('copy', function () {
-    gulp.src('./app/**')
+    return gulp.src('./app/**')
         .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/*.jade', '**/less/**', '**/bower_components/**']))
         .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('clean', function () {
-    gulp.src(['./dist/'], {read: false})
+    return gulp.src(['./dist/'], {read: false})
         .pipe(clean());
 });
 
 gulp.task('connect', function () {
-    connect.server({
+    return connect.server({
         root: 'app',
         port: 8081,
         livereload: true,
@@ -76,7 +76,7 @@ gulp.task('connect', function () {
 });
 
 gulp.task('reload', function () {
-    gulp.src('./app/**')
+    return gulp.src('./app/**')
         .pipe(connect.reload());
 });
 
