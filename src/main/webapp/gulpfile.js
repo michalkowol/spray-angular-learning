@@ -99,16 +99,19 @@ gulp.task('clean', function () {
         .pipe(clean());
 });
 
-gulp.task('clean-dist-bower', function () {
-    return gulp.src(['./dist/bower_components/'], {read: false})
-        .pipe(clean());
-});
-
 var unitTestFiles = [
     './dist/bower_components/angular/angular.js',
     './dist/bower_components/angular-mocks/angular-mocks.js',
     './dist/bower_components/angular-loader/angular-loader.js',
     './dist/js/**/*.js',
+    './test/unit/**/*.js'
+];
+
+var disUnitTestFiles = [
+    './dist/bower_components/angular/angular.js',
+    './dist/bower_components/angular-mocks/angular-mocks.js',
+    './dist/bower_components/angular-loader/angular-loader.js',
+    './dist/js/js/head-script*.js',
     './test/unit/**/*.js'
 ];
 
@@ -121,7 +124,7 @@ var e2eTestFiles = [
 ];
 
 gulp.task('karma-dist-unit', function () {
-    return gulp.src('./dist/js/head-script*.js')
+    return gulp.src(disUnitTestFiles)
         .pipe(karma({
             configFile: './test/karma.conf.js',
             action: 'run'
@@ -186,7 +189,7 @@ gulp.task('build', function (callback) {
 });
 
 gulp.task('dist', function (callback) {
-    runSequence('clean', 'build', 'usemin', 'clean-dist-bower', 'karma-dist-unit', callback);
+    runSequence('clean', 'build', 'usemin', 'karma-dist-unit', callback);
 });
 
 gulp.task('default', function (callback) {
