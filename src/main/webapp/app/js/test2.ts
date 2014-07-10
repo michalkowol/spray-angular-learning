@@ -55,6 +55,6 @@ interface Ray {
 }
 
 class Sphere implements Ray {
-    dir = 3
-    start = "aaa"
+    dir = 3;
+    start = "aaa";
 }

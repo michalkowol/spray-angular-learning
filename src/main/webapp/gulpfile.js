@@ -59,30 +59,29 @@ gulp.task('typescript', function () {
         .pipe(connect.reload());
 });
 
-gulp.task('copy-js', function () {
+gulp.task('js', function () {
     return gulp.src('./app/**/*.js')
         .pipe(gulp.dest('./dist/'))
         .pipe(connect.reload());
 });
 
-gulp.task('copy-css', function () {
+gulp.task('css', function () {
     return gulp.src('./app/**/*.css')
         .pipe(gulp.dest('./dist/'))
         .pipe(connect.reload());
 });
 
-gulp.task('copy-html', function () {
+gulp.task('html', function () {
     return gulp.src('./app/**/*.html')
         .pipe(gulp.dest('./dist/'))
         .pipe(connect.reload());
 });
 
-gulp.task('copy-src', ['copy-js', 'copy-css', 'copy-html']);
+gulp.task('src', ['js', 'css', 'html']);
 
 gulp.task('copy-assets', function () {
     return gulp.src('./app/**')
-        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/*.jade', '**/*.less', '**/*.coffee', '**/*.ts']))
-        .pipe(gulp.dest('./target/'))
+        .pipe(ignore.exclude(['**/*.js', '**/*.css', '**/*.html', '**/*.jade', '**/*.less', '**/*.coffee', '**/*.ts', '**/bower_components/**']))
         .pipe(gulp.dest('./dist/'));
 });
 
@@ -105,10 +104,26 @@ gulp.task('clean-dist-bower', function () {
         .pipe(clean());
 });
 
+var unitTestFiles = [
+    './dist/bower_components/angular/angular.js',
+    './dist/bower_components/angular-mocks/angular-mocks.js',
+    './dist/bower_components/angular-loader/angular-loader.js',
+    './dist/js/**/*.js',
+    './test/unit/**/*.js'
+];
+
+var e2eTestFiles = [
+    './dist/bower_components/angular/angular.js',
+    './dist/bower_components/angular-mocks/angular-mocks.js',
+    './dist/bower_components/angular-loader/angular-loader.js',
+    './dist/js/**/*.js',
+    './test/e2e/**/*.js'
+];
+
 gulp.task('karma-unit', function () {
-    return gulp.src('./test/unit/**.js')
+    return gulp.src(unitTestFiles)
         .pipe(karma({
-            configFile: './test/test/karma.conf.js',
+            configFile: './test/karma.conf.js',
             action: 'run'
         }))
         .on('error', function (err) {
@@ -116,10 +131,18 @@ gulp.task('karma-unit', function () {
         });
 });
 
-gulp.task('karma-e2e', function () {
-    return gulp.src('./test/e2e/**.js')
+gulp.task('karma-tdd-unit', function () {
+    return gulp.src(unitTestFiles)
         .pipe(karma({
-            configFile: './test/test/karma.conf.js',
+            configFile: './test/karma.conf.js',
+            action: 'watch'
+        }));
+});
+
+gulp.task('karma-e2e', function () {
+    return gulp.src(e2eTestFiles)
+        .pipe(karma({
+            configFile: './test/karma.conf.js',
             action: 'run'
         }))
         .on('error', function (err) {
@@ -144,24 +167,28 @@ gulp.task('connect', function () {
     });
 });
 
+gulp.task('js-with-jshint', function (callback) {
+    runSequence('jshint', 'js', callback);
+});
+
 gulp.task('watch', function () {
     gulp.watch(['./app/**/*.less'], ['less']);
     gulp.watch(['./app/**/*.jade'], ['jade']);
     gulp.watch(['./app/**/*.coffee'], ['coffee']);
     gulp.watch(['./app/**/*.ts'], ['typescript']);
-    gulp.watch(['./app/**/*.js'], ['copy-js']);
-    gulp.watch(['./app/**/*.css'], ['copy-css']);
-    gulp.watch(['./app/**/*.html'], ['copy-html']);
+    gulp.watch(['./app/**/*.js'], ['js-with-jshint']);
+    gulp.watch(['./app/**/*.css'], ['css']);
+    gulp.watch(['./app/**/*.html'], ['html']);
 });
 
 gulp.task('build', function (callback) {
-    runSequence('prettify', 'jshint', ['copy-src', 'copy-assets', 'less', 'jade', 'coffee', 'typescript'], callback);
+    runSequence('prettify', 'jshint', ['src', 'copy-assets', 'less', 'jade', 'coffee', 'typescript'], callback);
 });
 
 gulp.task('dist', function (callback) {
-    runSequence('clean', 'build', 'usemin', 'clean-dist-bower', callback);
+    runSequence('clean', 'build', 'usemin', 'clean-dist-bower', 'karma-unit', callback);
 });
 
 gulp.task('default', function (callback) {
-    runSequence('build', ['connect', 'watch'], callback);
+    runSequence('build', ['connect', 'watch', 'karma-tdd-unit'], callback);
 });
