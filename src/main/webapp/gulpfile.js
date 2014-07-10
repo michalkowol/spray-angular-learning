@@ -120,8 +120,8 @@ var e2eTestFiles = [
     './test/e2e/**/*.js'
 ];
 
-gulp.task('karma-unit', function () {
-    return gulp.src(unitTestFiles)
+gulp.task('karma-dist-unit', function () {
+    return gulp.src('./dist/js/head-script*.js')
         .pipe(karma({
             configFile: './test/karma.conf.js',
             action: 'run'
@@ -186,7 +186,7 @@ gulp.task('build', function (callback) {
 });
 
 gulp.task('dist', function (callback) {
-    runSequence('clean', 'build', 'usemin', 'clean-dist-bower', 'karma-unit', callback);
+    runSequence('clean', 'build', 'usemin', 'clean-dist-bower', 'karma-dist-unit', callback);
 });
 
 gulp.task('default', function (callback) {
