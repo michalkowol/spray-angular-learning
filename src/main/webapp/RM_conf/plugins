@@ -1,0 +1,19 @@
+html2js
+htmlhint
+gulp-newer // grunt-newer
+grunt-notify
+istanbul
+karma-coffee-preprocessor // ?
+karma-coverage
+karma-html2js-preprocessor
+karma-ng-html2js-preprocessor
+karma-ng-scenario
+karma-phantomjs-launcher
+
+karma-requirejs
+requirejs
+
+"build": "grunt",
+"test": "grunt test-headless",
+"start": "grunt server",
+"postinstall": "bower install"
