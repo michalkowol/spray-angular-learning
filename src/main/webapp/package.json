@@ -1,4 +1,6 @@
 {
+  "name": "spray-angular-learining",
+  "version": "0.0.1",
   "devDependencies": {
     "bower": "1.3.x",
     "gulp": "3.8.x",
