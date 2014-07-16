@@ -14,7 +14,7 @@
     var prefix = require('gulp-autoprefixer');
     var less = require('gulp-less');
     var jade = require('gulp-jade');
-    var ngmin = require('gulp-ngmin');
+    var ngAnnotate = require('gulp-ng-annotate');
     var prettify = require('gulp-jsbeautifier');
     var runSequence = require('run-sequence');
     var karma = require('gulp-karma');
@@ -93,7 +93,7 @@
         return gulp.src('./dist/**/*.html')
             .pipe(usemin({
                 css: [minifycss(), 'concat', prefix('last 2 versions'), rev()],
-                js: [ngmin({dynamic: true}), uglify(), rev()]
+                js: [ngAnnotate(), uglify(), rev()]
             }))
             .pipe(gulp.dest('./dist/'));
     });
