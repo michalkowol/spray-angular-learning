@@ -9,3 +9,5 @@ addSbtPlugin("org.scala-sbt.plugins" % "sbt-onejar" % "0.8")
 addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "0.99.5.1")
 
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.0.2")

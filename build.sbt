@@ -16,6 +16,8 @@ org.scalastyle.sbt.ScalastylePlugin.Settings
 
 instrumentSettings
 
+lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
+
 libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "17.0",
   "com.google.code.findbugs" % "jsr305" % "2.0.3",
