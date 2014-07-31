@@ -1,12 +1,13 @@
 package pl.learning.sprayio
 
-import spray.routing.{Route, SimpleRoutingApp}
-import akka.actor.ActorSystem
+import spray.routing.SimpleRoutingApp
+import akka.actor.{ Actor, Props, ActorSystem }
 import spray.http.MediaTypes
 import scala.language.postfixOps
 
 object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
-  implicit val actorSystem = ActorSystem()
+
+  implicit val system = ActorSystem("aquariumSystem")
 
   lazy val fishRoute = {
     var fishes = Fish.someFish
@@ -15,16 +16,14 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
         complete {
           "Welcome to aquarium"
         }
-      } ~
-      pathPrefix("fish") {
+      } ~ pathPrefix("fish") {
         path("all") {
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
               Fish.toJson(fishes)
             }
           }
-        } ~
-        path("all" / "pacific") {
+        } ~ path("all" / "pacific") {
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
               Fish.toJson(Tuna("pacific", 50) +: fishes)
@@ -32,15 +31,13 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
           }
         }
       }
-    } ~
-    getJson {
+    } ~ getJson {
       path("all" / "withJson") {
         complete {
           Fish.toJson(fishes)
         }
       }
-    } ~
-    post {
+    } ~ post {
       path("fish" / "add" / "tuna") {
         parameters("ocean"?, "age".as[Int], "weight" ? 20) { (ocean, age, weight) =>
           val newTuna = Tuna(ocean.getOrElse("pacific"), age)
@@ -54,12 +51,26 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
     }
   }
 
+  class SprayListener extends Actor {
+    import pl.learning.sprayio.tutorial._
+
+    def receive = {
+      case PiApproximation(pi, duration) =>
+        complete {
+          s"\n\tPi approximation: ${pi}\n\tCalculation time: ${duration}"
+        }
+    }
+  }
+
   lazy val waterRoute = {
     get {
       path("waterlevel") {
         complete {
-          val wl = 10
-          s"The water level is $wl"
+          import pl.learning.sprayio.tutorial._
+          val listener = system.actorOf(Props[Listener])
+          val master = system.actorOf(Props(new Master(nrOfWorkers = 4, nrOfElements = 1000, nrOfMessages = 10000, listener = listener)))
+          master ! Calculate
+          "aaa"
         }
       }
     }
@@ -68,14 +79,12 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
   lazy val staticResources = {
     path("") {
       getFromResource("index.html")
-    } ~
-    path("api" / "products") {
+    } ~ path("api" / "products") {
       getFromResource("js/store-products.json")
-    } ~
-    getFromResourceDirectory("")
+    } ~ getFromResourceDirectory("")
   }
 
-  startServer(interface = "0.0.0.0", port = 8080) {
+  val server = startServer(interface = "0.0.0.0", port = 8080) {
     fishRoute ~ waterRoute ~ staticResources
   }
 }
