@@ -69,7 +69,7 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
   class PiActor extends Actor {
     override def receive = {
       case GetPiApproximation => {
-        val master = actorSystem.actorOf(Master.props(nrOfWorkers = 4, nrOfElements = 1000, nrOfMessages = 10000, listener = sender))
+        val master = context.actorOf(Master.props(nrOfWorkers = 4, nrOfElements = 1000, nrOfMessages = 10000, listener = sender))
         master ! Calculate
       }
     }
