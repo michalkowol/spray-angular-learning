@@ -16,21 +16,26 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
         complete {
           "Welcome to aquarium"
         }
-      } ~ pathPrefix("fish") {
-        path("all") {
-          respondWithMediaType(MediaTypes.`application/json`) {
-            complete {
-              Fish.toJson(fishes)
+      } ~ path("twirl") {
+        complete {
+          pl.agh.txt.test(customer = "michas", orders = List("1", "2", "33"), third = "third").toString
+        }
+      } ~
+        pathPrefix("fish") {
+          path("all") {
+            respondWithMediaType(MediaTypes.`application/json`) {
+              complete {
+                Fish.toJson(fishes)
+              }
             }
-          }
-        } ~ path("all" / "pacific") {
-          respondWithMediaType(MediaTypes.`application/json`) {
-            complete {
-              Fish.toJson(Tuna("pacific", 50) +: fishes)
+          } ~ path("all" / "pacific") {
+            respondWithMediaType(MediaTypes.`application/json`) {
+              complete {
+                Fish.toJson(Tuna("pacific", 50) +: fishes)
+              }
             }
           }
         }
-      }
     } ~ getJson {
       path("all" / "withJson") {
         complete {
@@ -62,15 +67,26 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
     }
   }
 
-  lazy val waterRoute = {
+  lazy val piRoute = {
     get {
-      path("waterlevel") {
+      path("pi") {
         complete {
           import pl.learning.sprayio.tutorial._
           val listener = system.actorOf(Props[Listener])
           val master = system.actorOf(Props(new Master(nrOfWorkers = 4, nrOfElements = 1000, nrOfMessages = 10000, listener = listener)))
           master ! Calculate
           "aaa"
+        }
+      }
+    }
+  }
+
+  lazy val waterRoute = {
+    get {
+      path("waterlevel") {
+        complete {
+          val wl = 10
+          s"The water level is $wl"
         }
       }
     }
@@ -85,6 +101,6 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
   }
 
   val server = startServer(interface = "0.0.0.0", port = 8080) {
-    fishRoute ~ waterRoute ~ staticResources
+    fishRoute ~ waterRoute ~ piRoute ~ staticResources
   }
 }

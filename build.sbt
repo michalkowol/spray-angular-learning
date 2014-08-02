@@ -4,11 +4,11 @@ version := "1.0"
 
 scalaVersion := "2.11.2"
 
+fork in run := true
+
 incOptions := incOptions.value.withNameHashing(true)
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
-
-Revolver.settings
 
 Seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
 
@@ -17,6 +17,8 @@ org.scalastyle.sbt.ScalastylePlugin.Settings
 instrumentSettings
 
 scalariformSettings
+
+Revolver.settings
 
 lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
 
@@ -28,7 +30,7 @@ libraryDependencies ++= Seq(
   "org.scaldi" %% "scaldi-akka" % "0.4",
   "ch.qos.logback" % "logback-classic" % "1.1.2",
   "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
-  "org.scalatest" %% "scalatest" % "2.2.0" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.mockito" % "mockito-all" % "1.9.5" % "test",
   "org.json4s" %% "json4s-native" % "3.2.10"
 )
