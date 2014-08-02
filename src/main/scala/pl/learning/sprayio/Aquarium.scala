@@ -1,13 +1,21 @@
 package pl.learning.sprayio
 
+import pl.learning.sprayio.dwarf.DwarfRoute
+import pl.learning.sprayio.tutorial.{ Calculate, PiApproximation, Master }
 import spray.routing.SimpleRoutingApp
-import akka.actor.{ Actor, Props, ActorSystem }
+import akka.actor.{ Props, Actor, ActorSystem }
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.duration._
 import spray.http.MediaTypes
 import scala.language.postfixOps
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
 
-  implicit val system = ActorSystem("aquariumSystem")
+  implicit val actorSystem = ActorSystem("aquariumSystem")
+
+  implicit val timeout = Timeout(3.second)
 
   lazy val fishRoute = {
     var fishes = Fish.someFish
@@ -56,26 +64,25 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
     }
   }
 
-  class SprayListener extends Actor {
-    import pl.learning.sprayio.tutorial._
+  case object GetPiApproximation
 
-    def receive = {
-      case PiApproximation(pi, duration) =>
-        complete {
-          s"\n\tPi approximation: ${pi}\n\tCalculation time: ${duration}"
-        }
+  class PiActor extends Actor {
+    override def receive = {
+      case GetPiApproximation => {
+        val master = actorSystem.actorOf(Master.props(nrOfWorkers = 4, nrOfElements = 1000, nrOfMessages = 10000, listener = sender))
+        master ! Calculate
+      }
     }
   }
+
+  lazy val piActor = actorSystem.actorOf(Props[PiActor], name = "piActor")
 
   lazy val piRoute = {
     get {
       path("pi") {
         complete {
-          import pl.learning.sprayio.tutorial._
-          val listener = system.actorOf(Props[Listener])
-          val master = system.actorOf(Props(new Master(nrOfWorkers = 4, nrOfElements = 1000, nrOfMessages = 10000, listener = listener)))
-          master ! Calculate
-          "aaa"
+          val pi = (piActor ? GetPiApproximation).mapTo[PiApproximation]
+          pi.map(pi => s"Pi: ${pi.pi}")
         }
       }
     }
@@ -100,7 +107,9 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
     } ~ getFromResourceDirectory("")
   }
 
+  val dwarfRoute = new DwarfRoute
+
   val server = startServer(interface = "0.0.0.0", port = 8080) {
-    fishRoute ~ waterRoute ~ piRoute ~ staticResources
+    fishRoute ~ waterRoute ~ piRoute ~ dwarfRoute.path ~ staticResources
   }
 }
