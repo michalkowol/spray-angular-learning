@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class DwarfRoute(implicit actorSystem: ActorSystem) extends Directives with JsonDirectives {
 
-  implicit val timeout = Timeout(1.second)
+  implicit val timeout = Timeout(1 seconds)
 
   class HelloActor extends Actor {
     override def receive = {

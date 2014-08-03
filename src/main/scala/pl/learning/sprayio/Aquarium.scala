@@ -15,7 +15,7 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
 
   implicit val actorSystem = ActorSystem("aquariumSystem")
 
-  implicit val timeout = Timeout(3.second)
+  implicit val timeout = Timeout(3 seconds)
 
   lazy val fishRoute = {
     var fishes = Fish.someFish

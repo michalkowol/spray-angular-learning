@@ -8,11 +8,12 @@ import scala.language.postfixOps
 trait CameoMessages
 case class ResponseA(value: String) extends CameoMessages
 case class ResponseB(value: String) extends CameoMessages
-case class ResponseAB(valueA: String, valueB: String) extends CameoMessages
+case class ResponseC(value: String) extends CameoMessages
+case class ResponseABC(valueA: String, valueB: String, valueC: String) extends CameoMessages
 case object WorkTimeout extends CameoMessages
 
 case object GetResponse
-case object GetResponseAB
+case object GetResponseABC
 
 object CameoActor {
   def props(originalSender: ActorRef) = Props(new CameoActor(originalSender))
@@ -22,6 +23,7 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
 
   var responseFromServiceA: Option[String] = None
   var responseFromServiceB: Option[String] = None
+  var responseFromServiceC: Option[String] = None
 
   def receive = LoggingReceive {
     case ResponseA(value) => {
@@ -34,16 +36,21 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
       responseFromServiceB = Some(value)
       collectResults()
     }
+    case ResponseC(value) => {
+      log.debug("got response from C")
+      responseFromServiceC = Some(value)
+      collectResults()
+    }
     case WorkTimeout => {
       log.debug("sending Timeout")
       sendResponseAndShutdown(WorkTimeout)
     }
   }
 
-  def collectResults() = (responseFromServiceA, responseFromServiceB) match {
-    case (Some(a), Some(b)) =>
+  def collectResults() = (responseFromServiceA, responseFromServiceB, responseFromServiceC) match {
+    case (Some(a), Some(b), Some(c)) =>
       timeoutMessenger.cancel()
-      sendResponseAndShutdown(ResponseAB(a, b))
+      sendResponseAndShutdown(ResponseABC(a, b, c))
     case _ =>
   }
 
@@ -60,18 +67,19 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
 }
 
 object DelegatingActor {
-  def props(someServiceA: ActorRef, someServiceB: ActorRef) = Props(new DelegatingActor(someServiceA, someServiceB))
+  def props(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = Props(new DelegatingActor(serviceA, serviceB, serviceC))
 }
 
-class DelegatingActor(someServiceA: ActorRef, someServiceB: ActorRef) extends Actor with ActorLogging {
+class DelegatingActor(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
-    case GetResponseAB => {
+    case GetResponseABC => {
       log.debug("getting response from A and B")
       val originalSender = sender
       val cameoWorker = context.actorOf(CameoActor.props(originalSender))
-      someServiceA.tell(GetResponse, cameoWorker)
-      someServiceB.tell(GetResponse, cameoWorker)
+      serviceA.tell(GetResponse, cameoWorker)
+      serviceB.tell(GetResponse, cameoWorker)
+      serviceC.tell(GetResponse, cameoWorker)
     }
   }
 }

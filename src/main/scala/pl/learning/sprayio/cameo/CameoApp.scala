@@ -11,24 +11,25 @@ object CameoApp extends App {
     val system = ActorSystem("CameoSystem")
     val serviceA = system.actorOf(Props[ServiceA], name = "ServiceA")
     val serviceB = system.actorOf(Props[ServiceB], name = "ServiceB")
-    val serviceAB = system.actorOf(DelegatingActor.props(serviceA, serviceB), name = "ServiceAB")
+    val serviceC = system.actorOf(Props[ServiceC], name = "ServiceC")
+    val serviceAB = system.actorOf(DelegatingActor.props(serviceA, serviceB, serviceC), name = "ServiceAB")
 
     val listener = system.actorOf(Props(new Actor() with ActorLogging {
       def receive = LoggingReceive {
-        case response: ResponseAB => {
-          log.debug(s"got $response")
+        case response: ResponseABC => {
+          log.debug(s"got $response: ${response.valueA} ${response.valueB} ${response.valueC}")
           context.system.shutdown()
         }
         case WorkTimeout => {
           log.debug("got Timeout")
           context.system.shutdown()
         }
-        case GetResponseAB => {
-          serviceAB ! GetResponseAB
+        case GetResponseABC => {
+          serviceAB ! GetResponseABC
         }
       }
     }))
 
-    listener ! GetResponseAB
+    listener ! GetResponseABC
   }
 }
