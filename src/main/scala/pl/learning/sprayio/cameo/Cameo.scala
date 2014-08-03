@@ -25,17 +25,17 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case ResponseA(value) => {
-      println("got response from A")
+      log.debug("got response from A")
       responseFromServiceA = Some(value)
       collectResults()
     }
     case ResponseB(value) => {
-      println("got response from B")
+      log.debug("got response from B")
       responseFromServiceB = Some(value)
       collectResults()
     }
     case WorkTimeout => {
-      println("sending Timeout")
+      log.debug("sending Timeout")
       sendResponseAndShutdown(WorkTimeout)
     }
   }
@@ -48,7 +48,7 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
   }
 
   def sendResponseAndShutdown(response: Any) = {
-    println(s"sending response: $response")
+    log.debug(s"sending response: $response")
     originalSender ! response
     context.stop(self)
   }
@@ -67,7 +67,7 @@ class DelegatingActor(someServiceA: ActorRef, someServiceB: ActorRef) extends Ac
 
   def receive = LoggingReceive {
     case GetResponseAB => {
-      println("getting response from A and B")
+      log.debug("getting response from A and B")
       val originalSender = sender
       val cameoWorker = context.actorOf(CameoActor.props(originalSender))
       someServiceA.tell(GetResponse, cameoWorker)

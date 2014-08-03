@@ -16,11 +16,11 @@ object CameoApp extends App {
     val listener = system.actorOf(Props(new Actor() with ActorLogging {
       def receive = LoggingReceive {
         case response: ResponseAB => {
-          println(s"got $response")
+          log.debug(s"got $response")
           context.system.shutdown()
         }
         case WorkTimeout => {
-          println("got Timeout")
+          log.debug("got Timeout")
           context.system.shutdown()
         }
         case GetResponseAB => {

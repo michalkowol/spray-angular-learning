@@ -39,6 +39,7 @@ libraryDependencies ++= {
   val sprayVersion = "1.3.1"
   Seq(
     "com.typesafe.akka" %% "akka-actor-tests" % "2.3.4",
+    "com.typesafe.akka" %% "akka-slf4j" % "2.3.4",
     "io.spray" %% "spray-routing" % sprayVersion,
     "io.spray" %% "spray-client" % sprayVersion,
     "io.spray" %% "spray-testkit" % sprayVersion % "test"

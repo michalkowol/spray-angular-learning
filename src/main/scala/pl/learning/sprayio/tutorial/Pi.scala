@@ -1,6 +1,7 @@
 package pl.learning.sprayio.tutorial
 
 import akka.actor._
+import akka.event.LoggingReceive
 import akka.routing.RoundRobinPool
 
 sealed trait PiMessage
@@ -59,10 +60,10 @@ class Master(nrOfWorkers: Int, nrOfMessages: Int, nrOfElements: Int, listener: A
   }
 }
 
-class Listener extends Actor {
-  def receive = {
+class Listener extends Actor with ActorLogging {
+  def receive = LoggingReceive {
     case PiApproximation(pi, duration) =>
-      println(s"\n\tPi approximation: ${pi}\n\tCalculation time: ${duration}")
+      log.debug(s"\n\tPi approximation: ${pi}\n\tCalculation time: ${duration}")
       context.system.shutdown()
   }
 }
