@@ -2,6 +2,7 @@ package pl.learning.sprayio
 
 import pl.learning.sprayio.dwarf.DwarfRoute
 import pl.learning.sprayio.tutorial.{ Calculate, PiApproximation, Master }
+import pl.learning.sprayio.zero.{ZeroInNumberResponse, ZeroInNumberRequest, ZeroCounter}
 import spray.routing.SimpleRoutingApp
 import akka.actor.{ Props, Actor, ActorSystem }
 import akka.pattern.ask
@@ -88,6 +89,29 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
     }
   }
 
+  lazy val zeroActor = actorSystem.actorOf(Props[ZeroActor], name = "zeroActor")
+
+  class ZeroActor extends Actor {
+    override def receive = {
+      case zeroInNumberRequest: ZeroInNumberRequest =>
+        val zeroCounter = context.actorOf(ZeroCounter.props(4, sender))
+        zeroCounter ! zeroInNumberRequest
+    }
+  }
+
+  lazy val zeroRoute = {
+    get {
+      path("zero") {
+        parameters("number".as[Int]) { number =>
+          complete {
+            val zeroCount = (zeroActor ? ZeroInNumberRequest(number)).mapTo[ZeroInNumberResponse]
+            zeroCount.map(zeroCount => zeroCount.result.toString)
+          }
+        }
+      }
+    }
+  }
+
   lazy val waterRoute = {
     get {
       path("waterlevel") {
@@ -110,6 +134,6 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
   val dwarfRoute = new DwarfRoute
 
   val server = startServer(interface = "0.0.0.0", port = 8080) {
-    fishRoute ~ waterRoute ~ piRoute ~ dwarfRoute.path ~ staticResources
+    fishRoute ~ waterRoute ~ piRoute ~ zeroRoute ~ dwarfRoute.path ~ staticResources
   }
 }

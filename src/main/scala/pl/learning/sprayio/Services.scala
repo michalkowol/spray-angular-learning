@@ -1,7 +1,13 @@
-package pl.learning.sprayio.cameo
+package pl.learning.sprayio
 
-import akka.actor.{ActorLogging, Actor}
+import akka.actor.{Actor, ActorLogging}
 import akka.event.LoggingReceive
+
+trait ServicesMessages
+case object GetResponse
+case class ResponseA(value: String) extends ServicesMessages
+case class ResponseB(value: String) extends ServicesMessages
+case class ResponseC(value: String) extends ServicesMessages
 
 class ServiceA extends Actor with ActorLogging {
 

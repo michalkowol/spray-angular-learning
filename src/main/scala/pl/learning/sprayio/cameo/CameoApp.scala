@@ -2,6 +2,7 @@ package pl.learning.sprayio.cameo
 
 import akka.actor.{ActorLogging, Actor, Props, ActorSystem}
 import akka.event.LoggingReceive
+import pl.learning.sprayio.{ServiceC, ServiceB, ServiceA}
 
 object CameoApp extends App {
 
@@ -12,7 +13,7 @@ object CameoApp extends App {
     val serviceA = system.actorOf(Props[ServiceA], name = "ServiceA")
     val serviceB = system.actorOf(Props[ServiceB], name = "ServiceB")
     val serviceC = system.actorOf(Props[ServiceC], name = "ServiceC")
-    val serviceAB = system.actorOf(DelegatingActor.props(serviceA, serviceB, serviceC), name = "ServiceAB")
+    val serviceABC = system.actorOf(DelegatingActor.props(serviceA, serviceB, serviceC), name = "ServiceABC")
 
     val listener = system.actorOf(Props(new Actor() with ActorLogging {
       def receive = LoggingReceive {
@@ -25,7 +26,7 @@ object CameoApp extends App {
           context.system.shutdown()
         }
         case GetResponseABC => {
-          serviceAB ! GetResponseABC
+          serviceABC ! GetResponseABC
         }
       }
     }))

@@ -2,17 +2,14 @@ package pl.learning.sprayio.cameo
 
 import akka.actor.{ActorLogging, Props, ActorRef, Actor}
 import akka.event.LoggingReceive
+import pl.learning.sprayio.{GetResponse, ResponseC, ResponseB, ResponseA}
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
 trait CameoMessages
-case class ResponseA(value: String) extends CameoMessages
-case class ResponseB(value: String) extends CameoMessages
-case class ResponseC(value: String) extends CameoMessages
 case class ResponseABC(valueA: String, valueB: String, valueC: String) extends CameoMessages
 case object WorkTimeout extends CameoMessages
 
-case object GetResponse
 case object GetResponseABC
 
 object CameoActor {
