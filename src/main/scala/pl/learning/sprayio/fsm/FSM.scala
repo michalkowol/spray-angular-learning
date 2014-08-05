@@ -2,8 +2,8 @@ package pl.learning.sprayio.fsm
 
 import akka.actor.{Props, ActorLogging, ActorRef, Actor}
 import akka.event.LoggingReceive
-import pl.learning.sprayio.cameo.{GetResponseABC, ResponseABC}
-import pl.learning.sprayio.{GetResponse, ResponseC, ResponseB, ResponseA}
+import pl.learning.sprayio.cameo.GetResponseABC
+import pl.learning.sprayio._
 
 object FSMCollectingPattern {
   def props(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = Props(new FSMCollectingPattern(serviceA, serviceB, serviceC))

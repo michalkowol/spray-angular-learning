@@ -3,18 +3,13 @@ package pl.learning.sprayio.cameo
 import akka.actor.{ActorLogging, Props, ActorRef, Actor}
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
-case object WorkTimeout
-
-case object GetResponseABC
-
-object CameoActor {
+object CameoWithoutTimeoutActor {
   def props(originalSender: ActorRef) = Props(new CameoActor(originalSender))
 }
 
-class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
+class CameoWithoutTimeoutActor(originalSender: ActorRef) extends Actor with ActorLogging {
 
   var responseFromServiceA: Option[String] = None
   var responseFromServiceB: Option[String] = None
@@ -30,38 +25,26 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
     case ResponseC(value) =>
       responseFromServiceC = Some(value)
       collectResults()
-    case WorkTimeout =>
-      sendResponseAndShutdown(WorkTimeout)
   }
 
   def collectResults() = (responseFromServiceA, responseFromServiceB, responseFromServiceC) match {
     case (Some(a), Some(b), Some(c)) =>
-      timeoutMessenger.cancel()
-      sendResponseAndShutdown(ResponseABC(a, b, c))
+      originalSender ! ResponseABC(a, b, c)
+      context.stop(self)
     case _ =>
   }
-
-  def sendResponseAndShutdown(response: Any) = {
-    originalSender ! response
-    context.stop(self)
-  }
-
-  import context.dispatcher // ???
-  val timeoutMessenger = context.system.scheduler.scheduleOnce(250 millisecond) {
-    self ! WorkTimeout
-  }
 }
 
-object CameoDelegatingActor {
-  def props(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = Props(new CameoDelegatingActor(serviceA, serviceB, serviceC))
+object CameoWithoutTimeoutDelegatingActor {
+  def props(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = Props(new CameoWithoutTimeoutDelegatingActor(serviceA, serviceB, serviceC))
 }
 
-class CameoDelegatingActor(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
+class CameoWithoutTimeoutDelegatingActor(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case GetResponseABC =>
       val originalSender = sender
-      val cameoWorker = context.actorOf(CameoActor.props(originalSender))
+      val cameoWorker = context.actorOf(CameoWithoutTimeoutActor.props(originalSender))
       serviceA.tell(GetResponse, cameoWorker)
       serviceB.tell(GetResponse, cameoWorker)
       serviceC.tell(GetResponse, cameoWorker)

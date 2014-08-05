@@ -20,9 +20,8 @@ class Worker extends Actor {
   }
 
   def receive = {
-    case Work(start, nrOfElements) => {
+    case Work(start, nrOfElements) =>
       sender ! Result(calculatePiFor(start, nrOfElements))
-    }
   }
 }
 
@@ -45,18 +44,16 @@ class Master(nrOfWorkers: Int, nrOfMessages: Int, nrOfElements: Int, listener: A
   var state = State()
 
   def receive = {
-    case Calculate => {
+    case Calculate =>
       for (i <- 0 until nrOfMessages) {
         workerRouter ! Work(i * nrOfElements, nrOfElements)
       }
-    }
-    case Result(value) => {
+    case Result(value) =>
       state = state.update(pi = state.pi + value, nrOfResults = state.nrOfResults + 1)
       if (state.nrOfResults == nrOfMessages) {
         listener ! PiApproximation(state.pi, duration = System.currentTimeMillis - state.start)
         context.stop(self)
       }
-    }
   }
 }
 
