@@ -3,17 +3,17 @@ package pl.learning.sprayio.perrequest
 import akka.actor._
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import spray.routing.{RequestContext, Directives}
+import spray.routing.{ RequestContext, Directives }
 import scala.language.postfixOps
 import scala.concurrent.duration._
 
 object GatheringActor {
-  def props(originalSender : ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = {
+  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = {
     Props(new GatheringActor(originalSender, serviceA, serviceB, serviceC))
   }
 }
 
-class GatheringActor(originalSender : ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
+class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
   var responseA: Option[String] = None
   var responseB: Option[String] = None

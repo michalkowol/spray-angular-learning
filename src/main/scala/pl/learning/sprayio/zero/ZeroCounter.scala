@@ -1,6 +1,6 @@
 package pl.learning.sprayio.zero
 
-import akka.actor.{ActorRef, Props, Actor}
+import akka.actor.{ ActorRef, Props, Actor }
 import akka.routing.RoundRobinPool
 
 sealed trait ZeroMessages
@@ -26,11 +26,11 @@ object ZeroCounter {
 class ZeroCounter(nrOfWorkers: Int = 4, originalSender: ActorRef) extends Actor {
 
   val zeroCounterInTextRouter = context.actorOf(Props[ZeroCounterInText].withRouter(RoundRobinPool(nrOfWorkers)))
-  
+
   var number = 0
   var responses = 0
   var zeroCountTotal = 0
-  
+
   def receive = {
     case ZeroInNumberRequest(number) =>
       this.number = number

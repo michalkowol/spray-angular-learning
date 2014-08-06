@@ -3,7 +3,7 @@ package pl.learning.sprayio.cameo
 import akka.actor._
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import spray.routing.{RequestContext, Directives}
+import spray.routing.{ RequestContext, Directives }
 
 object ActorPerRequest {
   def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props = Props(new ActorPerRequest(ctx, serviceA, serviceB, serviceC))

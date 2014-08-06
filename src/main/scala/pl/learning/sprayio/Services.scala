@@ -1,6 +1,6 @@
 package pl.learning.sprayio
 
-import akka.actor.{ActorRef, Actor, ActorLogging}
+import akka.actor.{ ActorRef, Actor, ActorLogging }
 import akka.event.LoggingReceive
 
 trait ServicesMessages

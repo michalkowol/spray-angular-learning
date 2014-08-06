@@ -28,7 +28,7 @@ class Cameo2Actor(originalSender: ActorRef) extends Actor with ActorLogging {
     case ResponseC(value) =>
       responseFromServiceC = Some(value)
       collectResults()
-    case ReceiveTimeout  =>
+    case ReceiveTimeout =>
       sendResponseAndShutdown(WorkTimeout)
   }
 

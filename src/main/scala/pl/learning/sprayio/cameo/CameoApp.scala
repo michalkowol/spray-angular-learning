@@ -1,6 +1,6 @@
 package pl.learning.sprayio.cameo
 
-import akka.actor.{ActorLogging, Actor, Props, ActorSystem}
+import akka.actor.{ ActorLogging, Actor, Props, ActorSystem }
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
 

@@ -1,6 +1,6 @@
 package pl.learning.sprayio.simplest
 
-import akka.actor.{Props, ActorRef, ActorLogging, Actor}
+import akka.actor.{ Props, ActorRef, ActorLogging, Actor }
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
 
@@ -10,7 +10,7 @@ object Simplest {
 
 class Simplest(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
-  var originalSender : ActorRef = _
+  var originalSender: ActorRef = _
   var responseA: Option[String] = None
   var responseB: Option[String] = None
   var responseC: Option[String] = None
