@@ -77,5 +77,5 @@ class DwarfRoute(implicit actorSystem: ActorSystem) extends Directives with Json
     }
   }
 
-  def path: Route = dwarfRoute ~ supplyRoute
+  def route: Route = dwarfRoute ~ supplyRoute
 }
