@@ -2,6 +2,7 @@ package pl.learning.sprayio
 
 import pl.learning.sprayio.cameo.CameoRoute
 import pl.learning.sprayio.dwarf.DwarfRoute
+import pl.learning.sprayio.perrequest.PerRequestRoute
 import pl.learning.sprayio.tutorial.{ Calculate, PiApproximation, Master }
 import pl.learning.sprayio.zero.{ZeroInNumberResponse, ZeroInNumberRequest, ZeroCounter}
 import spray.routing.SimpleRoutingApp
@@ -134,8 +135,9 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
 
   val dwarfRoute = new DwarfRoute().route
   val cameoRoute = new CameoRoute().route
+  val perRequestRoute = new PerRequestRoute().route
 
   val server = startServer(interface = "0.0.0.0", port = 8080) {
-    fishRoute ~ waterRoute ~ piRoute ~ zeroRoute ~ dwarfRoute ~ cameoRoute ~ staticResources
+    fishRoute ~ waterRoute ~ piRoute ~ zeroRoute ~ dwarfRoute ~ cameoRoute ~ perRequestRoute ~ staticResources
   }
 }

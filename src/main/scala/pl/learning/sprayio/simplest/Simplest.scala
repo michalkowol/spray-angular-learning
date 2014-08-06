@@ -3,7 +3,6 @@ package pl.learning.sprayio.simplest
 import akka.actor.{Props, ActorRef, ActorLogging, Actor}
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import pl.learning.sprayio.cameo.GetResponseABC
 
 object Simplest {
   def props(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = Props(new Simplest(serviceA, serviceB, serviceC))

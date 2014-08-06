@@ -2,7 +2,6 @@ package pl.learning.sprayio.fsm
 
 import akka.actor.{Props, ActorLogging, ActorRef, Actor}
 import akka.event.LoggingReceive
-import pl.learning.sprayio.cameo.GetResponseABC
 import pl.learning.sprayio._
 
 object FSMCollectingPattern {

@@ -8,8 +8,6 @@ import scala.language.postfixOps
 
 case object WorkTimeout
 
-case object GetResponseABC
-
 object CameoActor {
   def props(originalSender: ActorRef) = Props(new CameoActor(originalSender))
 }
