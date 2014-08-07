@@ -1,10 +1,13 @@
 package pl.learning.sprayio
 
+import akka.io.IO
 import pl.learning.sprayio.cameo.CameoRoute
 import pl.learning.sprayio.dwarf.DwarfRoute
 import pl.learning.sprayio.perrequest.PerRequestRoute
+import pl.learning.sprayio.perrequest2.PerRequestRoute2
 import pl.learning.sprayio.tutorial.{ Calculate, PiApproximation, Master }
 import pl.learning.sprayio.zero.{ ZeroInNumberResponse, ZeroInNumberRequest, ZeroCounter }
+import spray.can.Http
 import spray.routing.SimpleRoutingApp
 import akka.actor.{ Props, Actor, ActorSystem }
 import akka.pattern.ask
@@ -137,7 +140,11 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
   val cameoRoute = new CameoRoute().route
   val perRequestRoute = new PerRequestRoute().route
 
-  val server = startServer(interface = "0.0.0.0", port = 8080) {
-    fishRoute ~ waterRoute ~ piRoute ~ zeroRoute ~ dwarfRoute ~ cameoRoute ~ perRequestRoute ~ staticResources
-  }
+  val perRequestRoute2 = actorSystem.actorOf(Props[PerRequestRoute2])
+
+//  val server = startServer(interface = "0.0.0.0", port = 8080) {
+//    fishRoute ~ waterRoute ~ piRoute ~ zeroRoute ~ dwarfRoute ~ cameoRoute ~ perRequestRoute ~ staticResources
+//  }
+
+  IO(Http) ! Http.Bind(perRequestRoute2, "0.0.0.0", port = 8080)
 }
