@@ -11,7 +11,7 @@ import spray.routing.RequestContext
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import spray.http.StatusCode
-import spray.http.StatusCodes.{ OK, BadRequest, GatewayTimeout, InternalServerError }
+import spray.http.StatusCodes.{ OK, BadRequest, RequestTimeout, InternalServerError }
 
 trait PerRequest extends Actor with ActorLogging with Json4sSupport {
 
@@ -28,7 +28,7 @@ trait PerRequest extends Actor with ActorLogging with Json4sSupport {
   def receive = LoggingReceive {
     case response: RestMessage => complete(OK, response)
     case validation: Validation => complete(BadRequest, validation)
-    case ReceiveTimeout => complete(GatewayTimeout, Error("Request timeout"))
+    case ReceiveTimeout => complete(RequestTimeout, Error("Request timeout"))
   }
 
   def complete[T <: AnyRef](status: StatusCode, response: T) = {

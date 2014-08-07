@@ -54,10 +54,10 @@ class RandomServiceB extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case GetResponse => {
-      Random.nextInt(3) match {
-        case 0 => sender ! ResponseB("ma")
-        case 1 => sender ! Error("Foo")
-        case 2 =>
+      Random.nextInt(4) match {
+        case 0 => sender ! Error("Foo")
+        case 1 =>
+        case _ => sender ! ResponseB("ma")
       }
     }
   }
