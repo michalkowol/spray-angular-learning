@@ -3,8 +3,8 @@ package pl.learning.sprayio.perrequest2
 import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
 import akka.event.LoggingReceive
-import pl.learning.sprayio.perrequest2.PerRequest.{PerRequestWithProps, PerRequestWithActorRef}
-import pl.learning.sprayio.{ResponseABC, RestMessage, Validation, Error}
+import pl.learning.sprayio.perrequest2.PerRequest.{PerRequestWithFactory, PerRequestWithProps, PerRequestWithActorRef}
+import pl.learning.sprayio._
 import spray.httpx.Json4sSupport
 import org.json4s.DefaultFormats
 import spray.routing.RequestContext
@@ -54,6 +54,14 @@ object PerRequest {
   case class PerRequestWithProps(ctx: RequestContext, props: Props, message: RestMessage) extends PerRequest {
     lazy val target = context.actorOf(props)
   }
+
+  object PerRequestWithFactory {
+    def props(ctx: RequestContext, actorFactory: ActorFactory, message: RestMessage) = Props(new PerRequestWithFactory(ctx, actorFactory, message))
+  }
+  case class PerRequestWithFactory(ctx: RequestContext, actorFactory: ActorFactory, message: RestMessage) extends PerRequest {
+    lazy val props = actorFactory.build(self)
+    lazy val target = context.actorOf(props)
+  }
 }
 
 trait PerRequestCreator {
@@ -65,5 +73,9 @@ trait PerRequestCreator {
 
   def perRequest(ctx: RequestContext, props: Props, message: RestMessage) = {
     context.actorOf(PerRequestWithProps.props(ctx, props, message))
+  }
+
+  def perRequest(ctx: RequestContext, actorFactory: ActorFactory, message: RestMessage) = {
+    context.actorOf(PerRequestWithFactory.props(ctx, actorFactory, message))
   }
 }

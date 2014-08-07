@@ -10,6 +10,10 @@ object GatheringActor {
   }
 }
 
+case class GatheringActorFactory(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends ActorFactory {
+  def build(originalSender: ActorRef) = GatheringActor.props(originalSender, serviceA, serviceB, serviceC)
+}
+
 class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
   var responseA: Option[String] = None

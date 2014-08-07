@@ -25,6 +25,7 @@ class PerRequestRoute2 extends HttpService with Actor with PerRequestCreator {
   }
 
   def getResponseABC(message: RestMessage): Route = {
-    ctx => perRequest(ctx, GatheringActor2.props(serviceA, serviceB, serviceC), message)
+//    ctx => perRequest(ctx, GatheringActor2.props(serviceA, serviceB, serviceC), message)
+    ctx => perRequest(ctx, GatheringActorFactory(serviceA, serviceB, serviceC), message)
   }
 }
