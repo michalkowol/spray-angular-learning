@@ -14,9 +14,9 @@ object CameoActor {
 
 class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
 
-  var responseFromServiceA: Option[String] = None
-  var responseFromServiceB: Option[String] = None
-  var responseFromServiceC: Option[String] = None
+  var responseFromServiceA = Option.empty[String]
+  var responseFromServiceB = Option.empty[String]
+  var responseFromServiceC = Option.empty[String]
 
   def receive = LoggingReceive {
     case ResponseA(value) =>

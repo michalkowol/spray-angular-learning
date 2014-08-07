@@ -12,9 +12,9 @@ object Cameo2Actor {
 
 class Cameo2Actor(originalSender: ActorRef) extends Actor with ActorLogging {
 
-  var responseFromServiceA: Option[String] = None
-  var responseFromServiceB: Option[String] = None
-  var responseFromServiceC: Option[String] = None
+  var responseFromServiceA = Option.empty[String]
+  var responseFromServiceB = Option.empty[String]
+  var responseFromServiceC = Option.empty[String]
 
   context.setReceiveTimeout(250 milliseconds) // could not send ReceiveTimeout - example: service A is sending ResponseA in loop and service B is not sending response at all
 

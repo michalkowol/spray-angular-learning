@@ -11,9 +11,9 @@ object Simplest {
 class Simplest(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
   var originalSender: ActorRef = _
-  var responseA: Option[String] = None
-  var responseB: Option[String] = None
-  var responseC: Option[String] = None
+  var responseA = Option.empty[String]
+  var responseB = Option.empty[String]
+  var responseC = Option.empty[String]
 
   def receive = LoggingReceive {
     case GetResponseABC =>

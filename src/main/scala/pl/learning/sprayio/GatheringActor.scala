@@ -16,9 +16,9 @@ case class GatheringPropsFactory(serviceA: ActorRef, serviceB: ActorRef, service
 
 class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
-  var responseA: Option[String] = None
-  var responseB: Option[String] = None
-  var responseC: Option[String] = None
+  var responseA = Option.empty[String]
+  var responseB = Option.empty[String]
+  var responseC = Option.empty[String]
 
   def receive = LoggingReceive {
     case GetResponseABC =>
@@ -38,6 +38,8 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
     case ResponseC(c) =>
       responseC = Some(c)
       collectResults()
+    case e: Error =>
+      throw FooException
   }
 
   def collectResults() = (responseA, responseB, responseC) match {

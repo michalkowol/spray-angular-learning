@@ -11,7 +11,7 @@ class PerRequestRoute2 extends HttpService with Actor with PerRequestCreator {
   def receive = runRoute(route)
 
   val serviceA = context.actorOf(Props[ServiceA])
-  val serviceB = context.actorOf(Props[ServiceB])
+  val serviceB = context.actorOf(Props[RandomServiceB])
   val serviceC = context.actorOf(Props[ServiceC])
 
   val route = {
