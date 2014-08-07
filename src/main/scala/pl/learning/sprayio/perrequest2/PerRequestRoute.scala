@@ -1,8 +1,10 @@
 package pl.learning.sprayio.perrequest2
 
-import akka.actor.{Props, Actor}
+import akka.actor.{ Props, Actor }
 import pl.learning.sprayio._
-import spray.routing.{Route, HttpService}
+import spray.routing.{ Route, HttpService }
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class PerRequestRoute2 extends HttpService with Actor with PerRequestCreator {
 
@@ -25,6 +27,6 @@ class PerRequestRoute2 extends HttpService with Actor with PerRequestCreator {
   }
 
   def getResponseABC(message: RestMessage): Route = {
-    ctx => perRequest(ctx, GatheringPropsFactory(serviceA, serviceB, serviceC), message)
+    ctx => perRequest(ctx, GatheringPropsFactory(serviceA, serviceB, serviceC), message, timeout = 500 milliseconds)
   }
 }

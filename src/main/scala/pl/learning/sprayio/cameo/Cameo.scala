@@ -44,7 +44,7 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
     context.stop(self)
   }
 
-  import context.dispatcher // ???
+  import context.dispatcher
   val timeoutMessenger = context.system.scheduler.scheduleOnce(250 millisecond) {
     self ! WorkTimeout
   }

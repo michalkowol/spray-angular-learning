@@ -142,9 +142,9 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
 
   val perRequestRoute2 = actorSystem.actorOf(Props[PerRequestRoute2])
 
-//  val server = startServer(interface = "0.0.0.0", port = 8080) {
-//    fishRoute ~ waterRoute ~ piRoute ~ zeroRoute ~ dwarfRoute ~ cameoRoute ~ perRequestRoute ~ staticResources
-//  }
+  //  val server = startServer(interface = "0.0.0.0", port = 8080) {
+  //    fishRoute ~ waterRoute ~ piRoute ~ zeroRoute ~ dwarfRoute ~ cameoRoute ~ perRequestRoute ~ staticResources
+  //  }
 
   IO(Http) ! Http.Bind(perRequestRoute2, "0.0.0.0", port = 8080)
 }

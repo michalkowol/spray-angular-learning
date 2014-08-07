@@ -2,6 +2,8 @@ package pl.learning.sprayio
 
 import akka.actor.{ ActorRef, Actor, ActorLogging }
 import akka.event.LoggingReceive
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 import scala.util.Random
 
@@ -13,6 +15,8 @@ case class ResponseC(value: String) extends ServicesMessages
 
 class InfiniteLoopServiceA extends Actor with ActorLogging {
 
+  import context.dispatcher
+
   case class SendWaitAndRepeat(org: ActorRef)
 
   def receive = LoggingReceive {
@@ -21,8 +25,9 @@ class InfiniteLoopServiceA extends Actor with ActorLogging {
     }
     case SendWaitAndRepeat(org) => {
       org ! ResponseA("Ala")
-      Thread.sleep(100)
-      self ! SendWaitAndRepeat(org)
+      context.system.scheduler.scheduleOnce(100 millisecond) {
+        self ! SendWaitAndRepeat(org)
+      }
     }
   }
 }
@@ -31,7 +36,6 @@ class ServiceA extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case GetResponse => {
-      Thread.sleep(200)
       sender ! ResponseA("Ala")
     }
   }
@@ -41,7 +45,6 @@ class ServiceB extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case GetResponse => {
-      Thread.sleep(200)
       sender ! ResponseB("ma")
     }
   }
@@ -51,7 +54,6 @@ class RandomServiceB extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case GetResponse => {
-      Thread.sleep(200)
       Random.nextInt(3) match {
         case 0 => sender ! ResponseB("ma")
         case 1 => sender ! Error("Foo")
@@ -73,7 +75,6 @@ class ServiceC extends Actor with ActorLogging {
 
   def receive = LoggingReceive {
     case GetResponse => {
-      Thread.sleep(100)
       sender ! ResponseC("kota")
     }
   }

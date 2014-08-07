@@ -4,7 +4,7 @@ import akka.actor.{ ActorLogging, Actor, Props, ActorSystem }
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
 
-object CameoApp extends App {
+object CameoApp /*extends App*/ {
 
   runSystem()
 
