@@ -8,4 +8,4 @@ case class ResponseABC(valueA: String, valueB: String, valueC: String) extends R
 case class Error(message: String)
 case class Validation(message: String)
 
-case object PetOverflowException extends Exception("PetOverflowException: OMG. Pets. Everywhere.")
+case object FooException extends Exception("Foo bar baz")

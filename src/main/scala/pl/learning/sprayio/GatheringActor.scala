@@ -10,7 +10,7 @@ object GatheringActor {
   }
 }
 
-case class GatheringActorFactory(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends ActorFactory {
+case class GatheringPropsFactory(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends PropsFactory {
   def build(originalSender: ActorRef) = GatheringActor.props(originalSender, serviceA, serviceB, serviceC)
 }
 
