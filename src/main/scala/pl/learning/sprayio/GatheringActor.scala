@@ -3,6 +3,7 @@ package pl.learning.sprayio
 import akka.actor.SupervisorStrategy.Escalate
 import akka.actor._
 import akka.event.LoggingReceive
+import pl.learning.sprayio.perrequest2.PropsFactory
 
 object GatheringActor {
   def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = {
