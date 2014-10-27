@@ -48,6 +48,7 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
   val timeoutMessenger = context.system.scheduler.scheduleOnce(250 millisecond) {
     self ! WorkTimeout
   }
+  // context.setReceiveTimeout(250 milliseconds) // could not send ReceiveTimeout - example: service A is sending ResponseA in loop and service B is not sending response at all
 }
 
 object CameoDelegatingActor {

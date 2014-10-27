@@ -2,6 +2,7 @@ package pl.learning.sprayio
 
 import akka.actor.{ ActorRef, Actor, ActorLogging }
 import akka.event.LoggingReceive
+import pl.learning.sprayio.perrequest2.Error
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
