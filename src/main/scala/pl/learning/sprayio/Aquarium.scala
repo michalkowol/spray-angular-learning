@@ -6,7 +6,6 @@ import pl.learning.sprayio.dwarf.DwarfRoute
 import pl.learning.sprayio.perrequest.PerRequestRoute
 import pl.learning.sprayio.perrequest2.PerRequestRoute2
 import pl.learning.sprayio.tutorial.{ Calculate, PiApproximation, Master }
-import pl.learning.sprayio.zero.{ ZeroInNumberResponse, ZeroInNumberRequest, ZeroCounter }
 import spray.can.Http
 import spray.routing.SimpleRoutingApp
 import akka.actor.{ Props, Actor, ActorSystem }
@@ -89,29 +88,6 @@ object Aquarium extends App with SimpleRoutingApp with JsonDirectives {
         complete {
           val pi = (piActor ? GetPiApproximation).mapTo[PiApproximation]
           pi.map(pi => s"Pi: ${pi.pi}")
-        }
-      }
-    }
-  }
-
-  lazy val zeroActor = actorSystem.actorOf(Props[ZeroActor], name = "zeroActor")
-
-  class ZeroActor extends Actor {
-    override def receive = {
-      case zeroInNumberRequest: ZeroInNumberRequest =>
-        val zeroCounter = context.actorOf(ZeroCounter.props(4, sender))
-        zeroCounter ! zeroInNumberRequest
-    }
-  }
-
-  lazy val zeroRoute = {
-    get {
-      path("zero") {
-        parameters("number".as[Int]) { number =>
-          complete {
-            val zeroCount = (zeroActor ? ZeroInNumberRequest(number)).mapTo[ZeroInNumberResponse]
-            zeroCount.map(zeroCount => zeroCount.result.toString)
-          }
         }
       }
     }
