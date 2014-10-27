@@ -16,7 +16,9 @@ org.scalastyle.sbt.ScalastylePlugin.Settings
 
 instrumentSettings
 
-scalariformSettings
+defaultScalariformSettings
+
+coverallsSettings
 
 Revolver.settings
 
@@ -25,13 +27,13 @@ lazy val root = (project in file(".")).enablePlugins(SbtTwirl)
 unmanagedResourceDirectories in Compile += baseDirectory.value / "src/main/webapp/dist"
 
 libraryDependencies ++= Seq(
-  "com.google.guava" % "guava" % "17.0",
+  "com.google.guava" % "guava" % "18.0",
   "com.google.code.findbugs" % "jsr305" % "3.0.0",
   "org.scaldi" %% "scaldi-akka" % "0.4",
   "ch.qos.logback" % "logback-classic" % "1.1.2",
   "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
-  "org.mockito" % "mockito-all" % "1.9.5" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.2" % "test",
+  "org.mockito" % "mockito-all" % "1.10.8" % "test",
   "org.json4s" %% "json4s-native" % "3.2.10"
 )
 
