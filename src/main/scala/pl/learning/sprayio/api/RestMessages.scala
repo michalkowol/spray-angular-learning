@@ -1,4 +1,4 @@
-package pl.learning.sprayio.perrequest2
+package pl.learning.sprayio.api
 
 trait RestMessage
 

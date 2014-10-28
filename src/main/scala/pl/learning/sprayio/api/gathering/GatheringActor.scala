@@ -1,9 +1,10 @@
-package pl.learning.sprayio
+package pl.learning.sprayio.api.gathering
 
-import akka.actor.SupervisorStrategy.Escalate
+import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
-import pl.learning.sprayio.perrequest2._
+import pl.learning.sprayio._
+import pl.learning.sprayio.api.PropsFactory
 
 object GatheringActor {
   def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = {
@@ -12,7 +13,7 @@ object GatheringActor {
 }
 
 case class GatheringPropsFactory(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends PropsFactory {
-  def build(originalSender: ActorRef) = GatheringActor.props(originalSender, serviceA, serviceB, serviceC)
+  def props(originalSender: ActorRef) = GatheringActor.props(originalSender, serviceA, serviceB, serviceC)
 }
 
 class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
@@ -39,8 +40,8 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
     case ResponseC(c) =>
       responseC = Some(c)
       collectResults()
-    case e: Error =>
-      throw FooException
+    case Failure(e) =>
+      throw e
   }
 
   def collectResults() = (responseA, responseB, responseC) match {
@@ -50,7 +51,7 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
     case _ =>
   }
 
-  override val supervisorStrategy = OneForOneStrategy() {
-    case _ => Escalate
+  override def postStop {
+    log.debug("STOP STOP STOP STOP")
   }
 }

@@ -3,6 +3,7 @@ package pl.learning.sprayio.perrequest
 import akka.actor._
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
+import pl.learning.sprayio.api.gathering.GatheringActor
 import spray.routing.{ RequestContext, Directives }
 import scala.language.postfixOps
 import scala.concurrent.duration._

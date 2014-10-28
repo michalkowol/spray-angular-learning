@@ -1,17 +1,17 @@
-package pl.learning.sprayio.perrequest2
+package pl.learning.sprayio.api
 
 import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
 import akka.event.LoggingReceive
-import pl.learning.sprayio.perrequest2.PerRequest.{ PerRequestWithPropsFactory, PerRequestWithActorRef }
-import pl.learning.sprayio._
-import spray.httpx.Json4sSupport
 import org.json4s.DefaultFormats
+import pl.learning.sprayio.api.PerRequest.{PerRequestWithPropsFactory, PerRequestWithActorRef}
+import spray.http.StatusCode
+import spray.http.StatusCodes.{BadRequest, InternalServerError, OK, RequestTimeout}
+import spray.httpx.Json4sSupport
 import spray.routing.RequestContext
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import spray.http.StatusCode
-import spray.http.StatusCodes.{ OK, BadRequest, RequestTimeout, InternalServerError }
 
 trait PerRequest extends Actor with ActorLogging with Json4sSupport {
 
@@ -53,7 +53,7 @@ object PerRequest {
     def props(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration) = Props(new PerRequestWithPropsFactory(ctx, propsFactory, message, timeout))
   }
   case class PerRequestWithPropsFactory(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration) extends PerRequest {
-    lazy val props = propsFactory.build(self)
+    lazy val props = propsFactory.props(self)
     lazy val target = context.actorOf(props)
   }
 }
