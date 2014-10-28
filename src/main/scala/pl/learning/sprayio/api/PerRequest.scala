@@ -15,8 +15,9 @@ import scala.language.postfixOps
 
 trait PerRequest extends Actor with ActorLogging with Json4sSupport {
 
+  def target: ActorRef
+
   val ctx: RequestContext
-  val target: ActorRef
   val message: RestMessage
   val timeout: Duration
 
@@ -53,8 +54,8 @@ object PerRequest {
     def props(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration) = Props(new PerRequestWithPropsFactory(ctx, propsFactory, message, timeout))
   }
   case class PerRequestWithPropsFactory(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration) extends PerRequest {
-    lazy val props = propsFactory.props(self)
-    lazy val target = context.actorOf(props)
+    def props = propsFactory.props(self)
+    def target = context.actorOf(props)
   }
 }
 
