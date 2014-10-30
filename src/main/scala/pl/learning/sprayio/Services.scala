@@ -6,7 +6,7 @@ import pl.learning.sprayio.api.Error
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-import scala.util.Random
+import scala.util.{ Failure, Random }
 
 trait ServicesMessages
 case object GetResponse
@@ -56,7 +56,7 @@ class RandomServiceB extends Actor with ActorLogging {
   def receive = LoggingReceive {
     case GetResponse => {
       Random.nextInt(4) match {
-        case 0 => sender ! Error("Foo")
+        case 0 => sender ! Failure(new Exception("Foo"))
         case 1 =>
         case _ => sender ! ResponseB("ma")
       }

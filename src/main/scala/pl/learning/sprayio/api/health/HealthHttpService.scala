@@ -1,8 +1,8 @@
 package pl.learning.sprayio.api.health
 
 import akka.actor.Props
-import pl.learning.sprayio.api.{RestMessage, PerRequestCreator}
-import spray.routing.{Route, HttpService}
+import pl.learning.sprayio.api.{ RestMessage, PerRequestCreator }
+import spray.routing.{ Route, HttpService }
 
 import scala.language.postfixOps
 import scala.concurrent.duration._

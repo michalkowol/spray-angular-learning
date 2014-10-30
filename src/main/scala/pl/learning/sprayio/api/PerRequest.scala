@@ -1,17 +1,19 @@
 package pl.learning.sprayio.api
 
-import akka.actor.SupervisorStrategy.Stop
 import akka.actor._
+import akka.actor.Status.Failure
+import akka.actor.SupervisorStrategy.Stop
 import akka.event.LoggingReceive
 import org.json4s.DefaultFormats
-import pl.learning.sprayio.api.PerRequest.{PerRequestWithPropsFactory, PerRequestWithActorRef}
+import pl.learning.sprayio.api.PerRequest.{ PerRequestWithPropsFactory, PerRequestWithActorRef }
 import spray.http.StatusCode
-import spray.http.StatusCodes.{BadRequest, InternalServerError, OK, RequestTimeout}
+import spray.http.StatusCodes.{ BadRequest, InternalServerError, OK, RequestTimeout }
 import spray.httpx.Json4sSupport
 import spray.routing.RequestContext
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.control.NonFatal
 
 trait PerRequest extends Actor with ActorLogging with Json4sSupport {
 
@@ -28,8 +30,9 @@ trait PerRequest extends Actor with ActorLogging with Json4sSupport {
 
   def receive = LoggingReceive {
     case response: RestMessage => complete(OK, response)
-    case validation: Validation => complete(BadRequest, validation)
-    case ReceiveTimeout => complete(RequestTimeout, Error("Request timeout"))
+    case validation: ValidationError => complete(BadRequest, validation)
+    case ReceiveTimeout => complete(RequestTimeout, RequestTimeoutError())
+    case Failure(exception) => complete(InternalServerError, Error(exception))
   }
 
   def complete[T <: AnyRef](status: StatusCode, response: T) = {
@@ -38,8 +41,8 @@ trait PerRequest extends Actor with ActorLogging with Json4sSupport {
   }
 
   override val supervisorStrategy = OneForOneStrategy() {
-    case exception =>
-      complete(InternalServerError, Error(exception.getMessage))
+    case NonFatal(exception) =>
+      complete(InternalServerError, Error(exception))
       Stop
   }
 }

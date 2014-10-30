@@ -18,9 +18,9 @@ case class GatheringPropsFactory(serviceA: ActorRef, serviceB: ActorRef, service
 
 class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
-  var responseA = Option.empty[String]
-  var responseB = Option.empty[String]
-  var responseC = Option.empty[String]
+  private var responseA = Option.empty[String]
+  private var responseB = Option.empty[String]
+  private var responseC = Option.empty[String]
 
   def receive = LoggingReceive {
     case GetResponseABC =>
@@ -30,7 +30,7 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
       context.become(waitingForResponses)
   }
 
-  def waitingForResponses = LoggingReceive {
+  private def waitingForResponses = LoggingReceive {
     case ResponseA(a) =>
       responseA = Some(a)
       collectResults()
@@ -40,18 +40,22 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
     case ResponseC(c) =>
       responseC = Some(c)
       collectResults()
-    case Failure(e) =>
-      throw e
+    case failure: Failure =>
+      sendResponseAndShutdown(failure)
   }
 
-  def collectResults() = (responseA, responseB, responseC) match {
+  private def collectResults() = (responseA, responseB, responseC) match {
     case (Some(a), Some(b), Some(c)) =>
-      originalSender ! ResponseABC(a, b, c)
-      self ! PoisonPill
+      sendResponseAndShutdown(ResponseABC(a, b, c))
     case _ =>
   }
 
+  private def sendResponseAndShutdown(response: Any) = {
+    originalSender ! response
+    context.stop(self)
+  }
+
   override def postStop {
-    log.debug("STOP STOP STOP STOP")
+    log.debug("Stopping...")
   }
 }

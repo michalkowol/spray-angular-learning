@@ -2,7 +2,7 @@ package pl.learning.sprayio.api.gathering
 
 import akka.actor.Props
 import pl.learning.sprayio._
-import pl.learning.sprayio.api.{RestMessage, PerRequestCreator}
+import pl.learning.sprayio.api.{ RestMessage, PerRequestCreator }
 import spray.routing._
 
 import scala.language.postfixOps
