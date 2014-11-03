@@ -1,4 +1,0 @@
-@(customer: String)(content: Txt)
-
-<h1>Welcome @customer!</h1>
-@content
