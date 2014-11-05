@@ -6,7 +6,7 @@ incOptions := incOptions.value.withNameHashing(true)
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
-Seq(com.github.retronym.SbtOneJar.oneJarSettings: _*)
+com.github.retronym.SbtOneJar.oneJarSettings
 
 org.scalastyle.sbt.ScalastylePlugin.Settings
 
@@ -17,10 +17,6 @@ defaultScalariformSettings
 coverallsSettings
 
 Revolver.settings
-
-lazy val api = (project in file(".")).enablePlugins(SbtTwirl)
-
-unmanagedResourceDirectories in Compile += baseDirectory.value / "src/main/webapp/dist"
 
 libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "18.0",

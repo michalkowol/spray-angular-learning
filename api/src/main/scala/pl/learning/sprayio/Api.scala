@@ -9,7 +9,10 @@ class Api extends HttpServiceActor with ActorLogging with HealthHttpService with
 
   def receive = runRoute {
     healthRoute ~
-      gatheringRoute
+    gatheringRoute ~
+    pathEndOrSingleSlash {
+      getFromResource("index.html")
+    }
   }
 }
 

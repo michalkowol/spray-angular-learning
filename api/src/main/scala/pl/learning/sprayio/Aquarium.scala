@@ -27,7 +27,8 @@ object Aquarium extends SimpleRoutingApp with JsonDirectives {
         }
       } ~ path("twirl") {
         complete {
-          pl.agh.txt.test(customer = "michas", orders = List("1", "2", "33"), third = "third").toString
+//          pl.agh.txt.test(customer = "michas", orders = List("1", "2", "33"), third = "third").toString
+          "test123"
         }
       } ~
         pathPrefix("fish") {

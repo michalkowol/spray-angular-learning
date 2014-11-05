@@ -1,11 +1,11 @@
 name := "spray-angular-learning"
 
-version := "1.0"
+version in ThisBuild := "1.0-SNAPSHOT"
 
 scalaVersion in ThisBuild := "2.11.2"
 
-lazy val api = project in file("api")
-
 lazy val ui = project in file("ui")
+
+lazy val api = (project in file("api")).enablePlugins(SbtTwirl).dependsOn(ui)
 
 lazy val root = (project in file(".")).aggregate(api, ui)
