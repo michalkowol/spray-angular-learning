@@ -65,11 +65,11 @@ object PerRequest {
 trait PerRequestCreator {
   implicit def actorRefFactory: ActorRefFactory
 
-  def perRequestWithActorRef(ctx: RequestContext, target: ActorRef, message: RestMessage, timeout: Duration = 250 milliseconds) = {
+  def perRequest(ctx: RequestContext, target: ActorRef, message: RestMessage, timeout: Duration = 250 milliseconds) = {
     actorRefFactory.actorOf(PerRequestWithActorRef.props(ctx, target, message, timeout))
   }
 
-  def perRequest(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration = 250 milliseconds) = {
+  def perRequestWithFactory(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration = 250 milliseconds) = {
     actorRefFactory.actorOf(PerRequestWithPropsFactory.props(ctx, propsFactory, message, timeout))
   }
 }

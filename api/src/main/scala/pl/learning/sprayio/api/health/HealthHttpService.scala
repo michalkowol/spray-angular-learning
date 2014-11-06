@@ -20,6 +20,6 @@ trait HealthHttpService extends HttpService with PerRequestCreator {
   }
 
   private def getHealth(message: RestMessage): Route = { ctx =>
-    perRequestWithActorRef(ctx, healthClient, message, 100 milliseconds)
+    perRequest(ctx, healthClient, message, 100 milliseconds)
   }
 }

@@ -14,8 +14,7 @@ class ServiceA extends Actor with ActorLogging {
 class ServiceB extends Actor with ActorLogging {
   def receive = LoggingReceive {
     case GetResponse => NotifyOnError {
-      sender ! ResponseB("has")
-      //throw new Exception("foo bar baz")
+      sender ! ResponseB("has" + 1/0)
     }
   }
 }
