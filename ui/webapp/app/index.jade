@@ -1,0 +1,25 @@
+doctype html
+html(lang="en" ng-app="gemStore")
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    // build:css css/style.min.css
+    link(rel='stylesheet' type='text/css' href='bower_components/bootstrap/dist/css/bootstrap.min.css')
+    link(rel='stylesheet' type='text/css' href='bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
+    link(rel='stylesheet' type='text/css' href='css/style.css')
+    // endbuild
+    // build:js js/app.min.js
+    script(type='text/javascript' src="bower_components/angular/angular.js")
+    script(type='text/javascript' src="js/app.js")
+    script(type='text/javascript' src="js/products.js")
+    // endbuild
+  body(ng-controller="StoreController as store")
+    header
+      h1.text-center Flatlander Crafted Gems
+      h2.text-center – an Angular store –
+    div.list-group
+      div.list-group-item(ng-repeat="product in store.products")
+        h3 {{product.name}}
+          em.pull-right {{product.price | currency}}
+        product-gallery
+        product-tabs
