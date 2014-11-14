@@ -4,7 +4,6 @@ import akka.actor.Props
 import pl.learning.sprayio.api.{ RestMessage, PerRequestCreator }
 import spray.routing.{ Route, HttpService }
 
-import scala.language.postfixOps
 import scala.concurrent.duration._
 
 trait HealthHttpService extends HttpService with PerRequestCreator {
@@ -20,6 +19,6 @@ trait HealthHttpService extends HttpService with PerRequestCreator {
   }
 
   private def getHealth(message: RestMessage): Route = { ctx =>
-    perRequest(ctx, healthClient, message, 100 milliseconds)
+    perRequest(ctx, healthClient, message, 100.milliseconds)
   }
 }

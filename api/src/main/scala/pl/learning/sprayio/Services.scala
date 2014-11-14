@@ -2,9 +2,7 @@ package pl.learning.sprayio
 
 import akka.actor.{ ActorRef, Actor, ActorLogging }
 import akka.event.LoggingReceive
-import pl.learning.sprayio.api.Error
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 import scala.util.{ Failure, Random }
 
@@ -26,7 +24,7 @@ class InfiniteLoopServiceA extends Actor with ActorLogging {
     }
     case SendWaitAndRepeat(org) => {
       org ! ResponseA("Ala")
-      context.system.scheduler.scheduleOnce(100 millisecond) {
+      context.system.scheduler.scheduleOnce(100.millisecond) {
         self ! SendWaitAndRepeat(org)
       }
     }

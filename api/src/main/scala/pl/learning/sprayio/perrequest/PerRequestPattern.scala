@@ -5,7 +5,6 @@ import akka.event.LoggingReceive
 import pl.learning.sprayio._
 import pl.learning.sprayio.api.gathering.GatheringActor
 import spray.routing.{ RequestContext, Directives }
-import scala.language.postfixOps
 import scala.concurrent.duration._
 
 object PerRequestPattern {
@@ -14,7 +13,7 @@ object PerRequestPattern {
 
 class PerRequestPattern(ctx: RequestContext) extends Actor with ActorLogging {
 
-  context.setReceiveTimeout(250 milliseconds)
+  context.setReceiveTimeout(250.milliseconds)
 
   def receive = LoggingReceive {
     case GetResponseABC =>

@@ -4,14 +4,13 @@ import pl.learning.sprayio.JsonDirectives
 import spray.routing._
 import akka.actor.{ Actor, Props, ActorSystem }
 import akka.pattern.ask
-import scala.language.postfixOps
 import akka.util.Timeout
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class DwarfRoute(implicit actorSystem: ActorSystem) extends Directives with JsonDirectives {
 
-  implicit val timeout = Timeout(1 seconds)
+  implicit val timeout = Timeout(1.second)
 
   class HelloActor extends Actor {
     override def receive = {
@@ -55,7 +54,7 @@ class DwarfRoute(implicit actorSystem: ActorSystem) extends Directives with Json
       } ~
       post {
         path("dwarf" / "add" / "mining") {
-          parameters("mineral"?, "gramsPerHour".as[Int]) { (mineral, gramsPerHour) =>
+          parameters("mineral".?, "gramsPerHour".as[Int]) { (mineral, gramsPerHour) =>
             val newDwarf = MiningDwarf(mineral.getOrElse("silver"), gramsPerHour)
             plentyOfDwarfs = newDwarf :: plentyOfDwarfs
             complete {

@@ -12,7 +12,6 @@ import spray.httpx.Json4sSupport
 import spray.routing.RequestContext
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 import scala.util.control.NonFatal
 
 trait PerRequest extends Actor with ActorLogging with Json4sSupport {
@@ -65,11 +64,11 @@ object PerRequest {
 trait PerRequestCreator {
   implicit def actorRefFactory: ActorRefFactory
 
-  def perRequest(ctx: RequestContext, target: ActorRef, message: RestMessage, timeout: Duration = 250 milliseconds) = {
+  def perRequest(ctx: RequestContext, target: ActorRef, message: RestMessage, timeout: Duration = 250.milliseconds) = {
     actorRefFactory.actorOf(PerRequestWithActorRef.props(ctx, target, message, timeout))
   }
 
-  def perRequestWithFactory(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration = 250 milliseconds) = {
+  def perRequestWithFactory(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration = 250.milliseconds) = {
     actorRefFactory.actorOf(PerRequestWithPropsFactory.props(ctx, propsFactory, message, timeout))
   }
 }

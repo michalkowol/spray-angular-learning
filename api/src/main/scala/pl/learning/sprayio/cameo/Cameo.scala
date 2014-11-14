@@ -4,7 +4,6 @@ import akka.actor.{ ActorLogging, Props, ActorRef, Actor }
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 case object WorkTimeout
 
@@ -45,7 +44,7 @@ class CameoActor(originalSender: ActorRef) extends Actor with ActorLogging {
   }
 
   import context.dispatcher
-  val timeoutMessenger = context.system.scheduler.scheduleOnce(250 millisecond) {
+  val timeoutMessenger = context.system.scheduler.scheduleOnce(250.millisecond) {
     self ! WorkTimeout
   }
   // context.setReceiveTimeout(250 milliseconds) // this line is wrong:  ReceiveTimeout will be never sent if service A is sending ResponseA in loop and service B is not sending response at all

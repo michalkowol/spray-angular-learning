@@ -6,13 +6,13 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.4.0")
 
 addSbtPlugin("org.scala-sbt.plugins" % "sbt-onejar" % "0.8")
 
-addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "0.99.9")
+addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "0.99.11")
 
 addSbtPlugin("org.scoverage" %% "sbt-coveralls" % "0.99.0")
 
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.0.2")
+addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.0.3")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.6")
 
