@@ -22,6 +22,6 @@ trait GatheringHttpService extends HttpService with PerRequestCreator {
   }
 
   private def getResponseABC(message: RestMessage): Route = { ctx =>
-    perRequestWithFactory(ctx, GatheringPropsFactory(serviceA, serviceB, serviceC), message, timeout = 5000.milliseconds)
+    perRequestWithFactory(ctx, GatheringPropsFactory(serviceA, serviceB, serviceC), message, timeout = 500.milliseconds)
   }
 }

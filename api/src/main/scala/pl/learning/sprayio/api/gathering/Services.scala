@@ -27,7 +27,7 @@ class RandomServiceB extends Actor with ActorLogging {
     case GetResponse => NotifyOnError {
       Random.nextInt(3) match {
         case 0 => throw new Exception("Custom exception")
-        case 1 =>
+        case 1 => // WARNING: Chrome repeats Request Timeout (408)
         case _ => sender ! ResponseB("has")
       }
     }
