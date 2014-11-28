@@ -72,7 +72,7 @@
     gulp.task('usemin', function () {
         return gulp.src('dist/**/*.html')
             .pipe(usemin({
-                css: [minifycss(), 'concat', prefix('last 2 versions')],
+                css: [minifycss(), 'concat', prefix()],
                 js: [uglify()]
             }))
             .pipe(gulp.dest('dist'));
