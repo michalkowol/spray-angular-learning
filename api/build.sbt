@@ -9,6 +9,7 @@ com.github.retronym.SbtOneJar.oneJarSettings
 org.scalastyle.sbt.ScalastylePlugin.Settings
 defaultScalariformSettings
 coverallsSettings
+scoverage.ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "pl.agh.*"
 Revolver.settings
 
 libraryDependencies += "com.google.guava" % "guava" % "18.0"
