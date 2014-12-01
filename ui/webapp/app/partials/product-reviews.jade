@@ -1,0 +1,22 @@
+ul
+  h4 Reviews
+  li(ng-repeat='review in product.reviews')
+    blockquote
+      strong {{review.stars}} Stars
+      | {{review.body}}
+      cite.clearfix —{{review.author}}
+form(name='reviewForm', ng-controller='ReviewController as reviewCtrl', ng-submit='reviewCtrl.addReview(product)')
+  blockquote
+    strong {{reviewCtrl.review.stars}} Stars
+    | {{reviewCtrl.review.body}}
+    cite.clearfix —{{reviewCtrl.review.author}}
+  h4 Submit a Review
+  fieldset.form-group
+    select.form-control(ng-model='reviewCtrl.review.stars', ng-options='stars for stars in [5,4,3,2,1]', title='Stars')
+      option(value='value') Rate the Product
+  fieldset.form-group
+    textarea.form-control(ng-model='reviewCtrl.review.body', placeholder='Write a short review of the product...', title='Review')
+  fieldset.form-group
+    input.form-control(ng-model='reviewCtrl.review.author', type='email', placeholder='jimmyDean@example.org', title='Email')
+  fieldset.form-group
+    input.btn.btn-primary.pull-right(type='submit', value='Submit Review')

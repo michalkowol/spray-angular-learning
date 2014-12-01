@@ -1,0 +1,6 @@
+div(ng-show="product.images.length")
+  div.img-wrap
+    img(ng-src="{{product.images[gallery.current]}}")
+  ul.img-thumbnails.clearfix
+    li.small-image.pull-left.thumbnail(ng-repeat="image in product.images")
+      img(ng-src="{{image}}")

@@ -1,0 +1,11 @@
+section
+  ul.nav.nav-pills
+    li(ng-class='{ active:tab.isSet(1) }')
+      <a href ng-click='tab.setTab(1)')>Description</a>
+    li(ng-class='{ active:tab.isSet(2) }')
+      <a href ng-click='tab.setTab(2)')>Specs</a>
+    li(ng-class='{ active:tab.isSet(3) }')
+      <a href ng-click='tab.setTab(3)')>Reviews</a>
+  product-description(ng-show='tab.isSet(1)')
+  div(product-specs='product-specs', ng-show='tab.isSet(2)')
+  product-reviews(ng-show='tab.isSet(3)')

@@ -9,7 +9,7 @@ trait StaticResources  extends Directives {
     pathEndOrSingleSlash {
       getFromResource("index.html")
     } ~ path("api" / "products") {
-      getFromResource("js/store-products.json")
+      getFromResource("data/store-products.json")
     } ~ getFromResourceDirectory("")
   }
 }
