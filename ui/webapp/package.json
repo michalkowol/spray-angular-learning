@@ -21,8 +21,7 @@
     "jshint-stylish": "1.0.x"
   },
   "scripts": {
-    "prestart": "npm install",
-    "postinstall": "bower install",
-    "start": "gulp"
+    "deploy": "npm install && bower install && gulp",
+    "server": "npm install && bower install && gulp server"
   }
 }
