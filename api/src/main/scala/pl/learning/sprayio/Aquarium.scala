@@ -110,5 +110,4 @@ object Aquarium extends SimpleRoutingApp with JsonDirectives {
   }
 
   val dwarfRoute = new DwarfRoute().route
-  val cameoRoute = new CameoRoute().route
 }

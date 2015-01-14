@@ -1,9 +1,10 @@
 package pl.learning.sprayio.cameo
 
+import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import spray.routing.{ RequestContext, Directives }
+import spray.routing.{HttpService, RequestContext, Directives}
 
 object ActorPerRequest {
   def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props = Props(new ActorPerRequest(ctx, serviceA, serviceB, serviceC))
@@ -13,25 +14,25 @@ class ActorPerRequest(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRe
 
   def receive = LoggingReceive {
     case GetResponseABC =>
-      val cameoDelegatingActor = context.actorOf(CameoDelegatingActor.props(serviceA, serviceB, serviceC))
-      cameoDelegatingActor ! GetResponseABC
+      val cameo = context.actorOf(CameoActor2.props(self, serviceA, serviceB, serviceC))
+      cameo ! GetResponseABC
     case ResponseABC(a, b, c) =>
       ctx.complete(s"$a $b $c")
-    case WorkTimeout =>
-      ctx.failWith(new Exception("No response from Cameo"))
+    case Failure(e) =>
+      ctx.failWith(e)
   }
 }
 
-class CameoRoute(implicit actorSystem: ActorSystem) extends Directives {
+trait CameoRoute extends HttpService {
 
-  val serviceA = actorSystem.actorOf(Props[ServiceA])
-  val serviceB = actorSystem.actorOf(Props[ServiceB])
-  val serviceC = actorSystem.actorOf(Props[ServiceC])
+  val serviceA = actorRefFactory.actorOf(Props[ServiceA])
+  val serviceB = actorRefFactory.actorOf(Props[ServiceB])
+  val serviceC = actorRefFactory.actorOf(Props[ServiceC])
 
-  lazy val route = {
+  lazy val cameoRoute = {
     get {
       path("cameo") { ctx =>
-        val actorPerRequest = actorSystem.actorOf(ActorPerRequest.props(ctx, serviceA, serviceB, serviceC))
+        val actorPerRequest = actorRefFactory.actorOf(ActorPerRequest.props(ctx, serviceA, serviceB, serviceC))
         actorPerRequest ! GetResponseABC
       }
     }
