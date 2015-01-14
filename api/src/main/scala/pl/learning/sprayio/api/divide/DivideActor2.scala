@@ -5,7 +5,8 @@ import akka.actor.Status.Failure
 import akka.event.LoggingReceive
 import pl.learning.sprayio.api.NotifyOnError
 
-class DivideClient2 extends Actor {
+class DivideActor2 extends Actor {
+  import DivideActor._
 
   var successCount = 0
 

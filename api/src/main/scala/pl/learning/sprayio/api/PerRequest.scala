@@ -1,25 +1,38 @@
 package pl.learning.sprayio.api
 
-import akka.actor._
 import akka.actor.Status.Failure
-import akka.actor.SupervisorStrategy.Stop
+import akka.actor._
+import akka.actor.SupervisorStrategy.{Decider, Stop}
 import akka.event.LoggingReceive
 import org.json4s.DefaultFormats
-import pl.learning.sprayio.api.PerRequest.{ PerRequestWithPropsFactory, PerRequestWithActorRef }
 import spray.http.StatusCode
-import spray.http.StatusCodes.{ BadRequest, InternalServerError, OK, RequestTimeout }
+import spray.http.StatusCodes.{BadRequest, InternalServerError, OK, RequestTimeout}
 import spray.httpx.Json4sSupport
 import spray.routing.RequestContext
 
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
+object PerRequest {
+  object PerRequestWithActorRef {
+    def props(ctx: RequestContext, target: ActorRef, message: Any, timeout: Duration) = Props(new PerRequestWithActorRef(ctx, target, message, timeout))
+  }
+  case class PerRequestWithActorRef(ctx: RequestContext, target: ActorRef, message: Any, timeout: Duration) extends PerRequest
+
+  object PerRequestWithPropsFactory {
+    def props(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration) = Props(new PerRequestWithPropsFactory(ctx, propsFactory, message, timeout))
+  }
+  case class PerRequestWithPropsFactory(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration) extends PerRequest {
+    lazy val props = propsFactory.props(self)
+    lazy val target = context.actorOf(props)
+  }
+}
+
 trait PerRequest extends Actor with ActorLogging with Json4sSupport {
 
-  def target: ActorRef
-
   val ctx: RequestContext
-  val message: RestMessage
+  val target: ActorRef
+  val message: Any
   val timeout: Duration
 
   val json4sFormats = DefaultFormats
@@ -28,47 +41,35 @@ trait PerRequest extends Actor with ActorLogging with Json4sSupport {
   target ! message
 
   def receive = LoggingReceive {
-    case response: RestMessage => complete(OK, response)
-    case validation: ValidationError => complete(BadRequest, validation)
-    case ReceiveTimeout => complete(RequestTimeout, RequestTimeoutError())
-    case Failure(exception) => complete(InternalServerError, Error(exception))
+    case validation: Validation => complete(BadRequest, validation)
+    case Failure(exception) => complete(InternalServerError, Error(exception.getMessage))
+    case ReceiveTimeout => complete(RequestTimeout, Error("Timeout"))
+    case response: AnyRef => complete(OK, response)
   }
 
   def complete[T <: AnyRef](status: StatusCode, response: T) = {
     ctx.complete(status, response)
-    self ! PoisonPill
+    context.stop(self)
   }
 
   override val supervisorStrategy = OneForOneStrategy() {
-    case NonFatal(exception) =>
-      complete(InternalServerError, Error(exception))
-      Stop
-  }
-}
-
-object PerRequest {
-  object PerRequestWithActorRef {
-    def props(ctx: RequestContext, target: ActorRef, message: RestMessage, timeout: Duration) = Props(new PerRequestWithActorRef(ctx, target, message, timeout))
-  }
-  case class PerRequestWithActorRef(ctx: RequestContext, target: ActorRef, message: RestMessage, timeout: Duration) extends PerRequest
-
-  object PerRequestWithPropsFactory {
-    def props(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration) = Props(new PerRequestWithPropsFactory(ctx, propsFactory, message, timeout))
-  }
-  case class PerRequestWithPropsFactory(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration) extends PerRequest {
-    def props = propsFactory.props(self)
-    def target = context.actorOf(props)
+    val stopOnNonFatal: Decider = {
+      case NonFatal(exception) =>
+        complete(InternalServerError, Error(exception.getMessage))
+        Stop
+    }
+    stopOnNonFatal orElse SupervisorStrategy.defaultDecider
   }
 }
 
 trait PerRequestCreator {
   implicit def actorRefFactory: ActorRefFactory
 
-  def perRequest(ctx: RequestContext, target: ActorRef, message: RestMessage, timeout: Duration = 250.milliseconds) = {
-    actorRefFactory.actorOf(PerRequestWithActorRef.props(ctx, target, message, timeout))
+  def perRequestWithRef(ctx: RequestContext, target: ActorRef, message: Any, timeout: Duration = 500.milliseconds) = {
+    actorRefFactory.actorOf(PerRequest.PerRequestWithActorRef.props(ctx, target, message, timeout))
   }
 
-  def perRequestWithFactory(ctx: RequestContext, propsFactory: PropsFactory, message: RestMessage, timeout: Duration = 250.milliseconds) = {
-    actorRefFactory.actorOf(PerRequestWithPropsFactory.props(ctx, propsFactory, message, timeout))
+  def perRequest(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration = 500.milliseconds) = {
+    actorRefFactory.actorOf(PerRequest.PerRequestWithPropsFactory.props(ctx, propsFactory, message, timeout))
   }
 }

@@ -1,24 +1,24 @@
 package pl.learning.sprayio.api.health
 
 import akka.actor.Props
-import pl.learning.sprayio.api.{ RestMessage, PerRequestCreator }
+import pl.learning.sprayio.api.PerRequestCreator
 import spray.routing.{ Route, HttpService }
 
 import scala.concurrent.duration._
 
 trait HealthHttpService extends HttpService with PerRequestCreator {
 
-  private val healthClient = actorRefFactory.actorOf(Props[HealthClient])
+  private val healthActor = actorRefFactory.actorOf(Props[HealthActor], "HealthActor")
 
   def healthRoute = get {
     path("health") {
       getHealth {
-        GetHealth
+        HealthActor.GetHealth
       }
     }
   }
 
-  private def getHealth(message: RestMessage): Route = { ctx =>
-    perRequest(ctx, healthClient, message, 100.milliseconds)
+  private def getHealth(message: Any): Route = { ctx =>
+    perRequestWithRef(ctx, healthActor, message, 100.milliseconds)
   }
 }

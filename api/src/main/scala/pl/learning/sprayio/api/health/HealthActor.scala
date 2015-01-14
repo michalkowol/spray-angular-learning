@@ -3,7 +3,13 @@ package pl.learning.sprayio.api.health
 import akka.actor.Actor
 import akka.event.LoggingReceive
 
-class HealthClient extends Actor {
+object HealthActor {
+  case class Health(status: String)
+  case object GetHealth
+}
+
+class HealthActor extends Actor {
+  import HealthActor._
   def receive = LoggingReceive {
     case GetHealth => sender ! Health("up")
   }

@@ -6,17 +6,17 @@ import spray.routing.{Route, HttpService}
 
 trait DivideHttpService extends HttpService with PerRequestCreator {
 
-  private val divideClient = actorRefFactory.actorOf(Props[DivideClient], "DivideClient")
+  private val divideClient = actorRefFactory.actorOf(Props[DivideActor], "DivideActor")
 
   def divideRoute = get {
     path("divide" / IntNumber / IntNumber) { (a, b) =>
       divideNumbers {
-        DivideNumbers(a, b)
+        DivideActor.DivideNumbers(a, b)
       }
     }
   }
 
-  private def divideNumbers(message: RestMessage): Route = { ctx =>
-    perRequest(ctx, divideClient, message)
+  private def divideNumbers(message: Any): Route = { ctx =>
+    perRequestWithRef(ctx, divideClient, message)
   }
 }
