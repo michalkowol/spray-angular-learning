@@ -12,11 +12,11 @@ class Api extends HttpServiceActor with ActorLogging with HealthHttpService with
   def receive = runRoute {
     pathPrefix("api") {
       healthRoute ~
-      gatheringRoute ~
-      divideRoute ~
-      cameoRoute
+        gatheringRoute ~
+        divideRoute ~
+        cameoRoute
     } ~
-    staticResources
+      staticResources
   }
 }
 

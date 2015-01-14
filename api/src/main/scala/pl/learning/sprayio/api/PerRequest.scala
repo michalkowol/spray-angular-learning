@@ -2,11 +2,11 @@ package pl.learning.sprayio.api
 
 import akka.actor.Status.Failure
 import akka.actor._
-import akka.actor.SupervisorStrategy.{Decider, Stop}
+import akka.actor.SupervisorStrategy.{ Decider, Stop }
 import akka.event.LoggingReceive
 import org.json4s.DefaultFormats
 import spray.http.StatusCode
-import spray.http.StatusCodes.{BadRequest, InternalServerError, OK, RequestTimeout}
+import spray.http.StatusCodes.{ BadRequest, InternalServerError, OK, RequestTimeout }
 import spray.httpx.Json4sSupport
 import spray.routing.RequestContext
 

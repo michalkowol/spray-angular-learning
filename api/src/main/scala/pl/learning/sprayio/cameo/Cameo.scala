@@ -1,10 +1,8 @@
 package pl.learning.sprayio.cameo
 
 import akka.actor.Status.Failure
-import akka.actor.{ActorRef, Actor}
+import akka.actor.{ ActorRef, Actor }
 import scala.concurrent.duration._
-
-case class TimeoutException(msg: String = "Timeout") extends Exception(msg)
 
 trait Cameo {
   this: Actor =>
