@@ -2,6 +2,7 @@ package pl.learning.sprayio.cameo
 
 import akka.actor.Status.Failure
 import akka.actor.{ ActorRef, Actor }
+import pl.learning.sprayio.TimeoutException
 import scala.concurrent.duration._
 
 trait Cameo {
