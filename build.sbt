@@ -1,5 +1,4 @@
 name := "spray-angular-learning"
-version in ThisBuild := "1.0-SNAPSHOT"
 scalaVersion in ThisBuild := "2.11.5"
 
 lazy val ui = project in file("ui")

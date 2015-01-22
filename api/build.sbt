@@ -12,7 +12,7 @@ jacoco.settings
 Revolver.settings
 
 val sprayVersion = "1.3.2"
-val akkaVersion = "2.3.8"
+val akkaVersion = "2.3.9"
 
 libraryDependencies += "com.google.guava" % "guava" % "18.0"
 libraryDependencies += "com.google.code.findbugs" % "jsr305" % "3.0.0"
