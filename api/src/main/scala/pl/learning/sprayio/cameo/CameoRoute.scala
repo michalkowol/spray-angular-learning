@@ -7,7 +7,8 @@ import pl.learning.sprayio._
 import spray.routing.{ HttpService, RequestContext, Directives }
 
 object ActorPerRequest {
-  def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props = Props(new ActorPerRequest(ctx, serviceA, serviceB, serviceC))
+  def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =
+    Props(new ActorPerRequest(ctx, serviceA, serviceB, serviceC))
 }
 
 class ActorPerRequest(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {

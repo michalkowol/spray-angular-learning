@@ -55,7 +55,7 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
     context.stop(self)
   }
 
-  override def postStop {
+  override def postStop: Unit = {
     log.debug("Stopping...")
   }
 }

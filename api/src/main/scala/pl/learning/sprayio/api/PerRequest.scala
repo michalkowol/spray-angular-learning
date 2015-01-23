@@ -21,7 +21,8 @@ object PerRequest {
   case class PerRequestWithActorRef(ctx: RequestContext, target: ActorRef, message: Any, timeout: Duration) extends PerRequest
 
   object PerRequestWithPropsFactory {
-    def props(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration) = Props(new PerRequestWithPropsFactory(ctx, propsFactory, message, timeout))
+    def props(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration) =
+      Props(new PerRequestWithPropsFactory(ctx, propsFactory, message, timeout))
   }
   case class PerRequestWithPropsFactory(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration) extends PerRequest {
     lazy val props = propsFactory.props(self)
@@ -44,7 +45,7 @@ trait PerRequest extends Actor with ActorLogging with Json4sSupport {
   def receive = LoggingReceive {
     case validation: Validation => complete(BadRequest, validation)
     case Failure(exception) => complete(InternalServerError, Error(exception.getMessage))
-    case ReceiveTimeout => complete(RequestTimeout, TimeoutException())
+    case ReceiveTimeout => complete(RequestTimeout, new TimeoutException)
     case response: AnyRef => complete(OK, response)
   }
 

@@ -6,7 +6,8 @@ import pl.learning.sprayio._
 import scala.concurrent.duration._
 
 object CameoActor2 {
-  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = Props(new CameoActor2(originalSender, serviceA, serviceB, serviceC))
+  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) =
+    Props(new CameoActor2(originalSender, serviceA, serviceB, serviceC))
 }
 
 class CameoActor2(val originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging with Cameo {

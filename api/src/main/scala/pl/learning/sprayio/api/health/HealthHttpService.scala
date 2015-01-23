@@ -2,6 +2,7 @@ package pl.learning.sprayio.api.health
 
 import akka.actor.Props
 import pl.learning.sprayio.api.PerRequestCreator
+import pl.learning.sprayio.cameo.PingActor
 import spray.routing.{ Route, HttpService }
 
 import scala.concurrent.duration._

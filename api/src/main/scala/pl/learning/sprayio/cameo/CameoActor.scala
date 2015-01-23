@@ -9,7 +9,8 @@ import scala.concurrent.duration._
 case object WorkTimeout
 
 object CameoActor {
-  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = Props(new CameoActor(originalSender, serviceA, serviceB, serviceC))
+  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) =
+    Props(new CameoActor(originalSender, serviceA, serviceB, serviceC))
 }
 
 class CameoActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
@@ -51,7 +52,8 @@ class CameoActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRe
 
   import context.dispatcher
   val timeoutMessenger = context.system.scheduler.scheduleOnce(50.millisecond) {
-    sendResponseAndShutdown(Failure(TimeoutException()))
+    sendResponseAndShutdown(Failure(new TimeoutException))
   }
-  // context.setReceiveTimeout(50 milliseconds) // this line is wrong:  ReceiveTimeout will be never sent if service A is sending ResponseA in loop and service B is not sending response at all
+  // context.setReceiveTimeout(50 milliseconds) // this line is wrong:  ReceiveTimeout will be never sent
+  // if service A is sending ResponseA in loop and service B is not sending response at all
 }

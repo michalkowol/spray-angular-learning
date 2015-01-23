@@ -14,7 +14,7 @@ class DivideActor extends Actor {
 
   var successCount = 0
 
-  override def receive = LoggingReceive {
+  override def receive: Receive = LoggingReceive {
     case DivideNumbers(a, b) => NotifyOnError {
       successCount += 1
       sender() ! DivideResult(a / b, successCount)
