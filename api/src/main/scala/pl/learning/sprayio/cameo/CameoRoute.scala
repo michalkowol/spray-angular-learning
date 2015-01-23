@@ -4,7 +4,7 @@ import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import spray.routing.{ HttpService, RequestContext, Directives }
+import spray.routing.{ HttpService, RequestContext }
 
 object ActorPerRequest {
   def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =
@@ -13,7 +13,7 @@ object ActorPerRequest {
 
 class ActorPerRequest(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
-  def receive = LoggingReceive {
+  def receive: Receive =  LoggingReceive {
     case GetResponseABC =>
       val cameo = context.actorOf(CameoActor2.props(self, serviceA, serviceB, serviceC))
       cameo ! GetResponseABC

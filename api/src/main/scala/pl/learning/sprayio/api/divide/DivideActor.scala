@@ -2,7 +2,7 @@ package pl.learning.sprayio.api.divide
 
 import akka.actor.Actor
 import akka.event.LoggingReceive
-import pl.learning.sprayio.api.NotifyOnError
+import pl.learning.sprayio.api.pattern.NotifyOnError
 
 object DivideActor {
   case class DivideNumbers(a: Int, b: Int)

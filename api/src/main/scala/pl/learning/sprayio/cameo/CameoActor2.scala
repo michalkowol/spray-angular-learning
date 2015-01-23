@@ -3,22 +3,23 @@ package pl.learning.sprayio.cameo
 import akka.actor.{ ActorLogging, Props, ActorRef, Actor }
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
+import pl.learning.sprayio.api.pattern.Cameo
 import scala.concurrent.duration._
 
 object CameoActor2 {
-  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) =
+  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =
     Props(new CameoActor2(originalSender, serviceA, serviceB, serviceC))
 }
 
 class CameoActor2(val originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging with Cameo {
 
-  override def timeout = 200.milliseconds
+  override def timeout: FiniteDuration = 200.milliseconds
 
-  var responseFromServiceA = Option.empty[String]
-  var responseFromServiceB = Option.empty[String]
-  var responseFromServiceC = Option.empty[String]
+  private var responseFromServiceA = Option.empty[String]
+  private var responseFromServiceB = Option.empty[String]
+  private var responseFromServiceC = Option.empty[String]
 
-  def receive = LoggingReceive {
+  def receive: Receive =  LoggingReceive {
     case GetResponseABC =>
       serviceA ! GetResponse
       serviceB ! GetResponse
@@ -26,7 +27,7 @@ class CameoActor2(val originalSender: ActorRef, serviceA: ActorRef, serviceB: Ac
       context.become(waitingForResponses)
   }
 
-  def waitingForResponses: Receive = LoggingReceive {
+  private def waitingForResponses: Receive = LoggingReceive {
     case ResponseA(value) =>
       responseFromServiceA = Some(value)
       collectResults
@@ -38,7 +39,7 @@ class CameoActor2(val originalSender: ActorRef, serviceA: ActorRef, serviceB: Ac
       collectResults
   }
 
-  def collectResults: Unit = for {
+  private def collectResults: Unit = for {
     a <- responseFromServiceA
     b <- responseFromServiceB
     c <- responseFromServiceC

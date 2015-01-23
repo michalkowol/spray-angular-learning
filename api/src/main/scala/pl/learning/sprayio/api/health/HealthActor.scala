@@ -10,7 +10,7 @@ object HealthActor {
 
 class HealthActor extends Actor {
   import HealthActor._
-  def receive = LoggingReceive {
-    case GetHealth => sender ! Health("up")
+  def receive: Receive = LoggingReceive {
+    case GetHealth => sender() ! Health("up")
   }
 }

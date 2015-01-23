@@ -5,8 +5,6 @@ fork in run := true
 incOptions := incOptions.value.withNameHashing(true)
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
-com.github.retronym.SbtOneJar.oneJarSettings
-org.scalastyle.sbt.ScalastylePlugin.Settings
 defaultScalariformSettings
 jacoco.settings
 Revolver.settings

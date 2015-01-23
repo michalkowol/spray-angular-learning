@@ -1,6 +1,5 @@
 name := "ui"
 
-exportJars := true
 unmanagedResourceDirectories in Compile += baseDirectory.value / "webapp" / "dist"
 
 lazy val compileUI = taskKey[Boolean]("Build UI")

@@ -9,17 +9,17 @@ import scala.concurrent.duration._
 case object WorkTimeout
 
 object CameoActor {
-  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) =
+  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =
     Props(new CameoActor(originalSender, serviceA, serviceB, serviceC))
 }
 
 class CameoActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
-  var responseFromServiceA = Option.empty[String]
-  var responseFromServiceB = Option.empty[String]
-  var responseFromServiceC = Option.empty[String]
+  private var responseFromServiceA = Option.empty[String]
+  private var responseFromServiceB = Option.empty[String]
+  private var responseFromServiceC = Option.empty[String]
 
-  def receive = LoggingReceive {
+  def receive: Receive =  LoggingReceive {
     case GetResponseABC =>
       serviceA ! GetResponse
       serviceB ! GetResponse
@@ -27,7 +27,7 @@ class CameoActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRe
       context.become(waitingForResponses)
   }
 
-  def waitingForResponses: Receive = LoggingReceive {
+  private def waitingForResponses: Receive = LoggingReceive {
     case ResponseA(value) =>
       responseFromServiceA = Some(value)
       collectResults
@@ -39,19 +39,19 @@ class CameoActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRe
       collectResults
   }
 
-  def collectResults: Unit = for {
+  private def collectResults: Unit = for {
     a <- responseFromServiceA
     b <- responseFromServiceB
     c <- responseFromServiceC
   } yield sendResponseAndShutdown(ResponseABC(a, b, c))
 
-  def sendResponseAndShutdown(response: AnyRef) = {
+  private def sendResponseAndShutdown(response: AnyRef) = {
     originalSender ! response
     context.stop(self)
   }
 
   import context.dispatcher
-  val timeoutMessenger = context.system.scheduler.scheduleOnce(50.millisecond) {
+  private val timeoutMessenger = context.system.scheduler.scheduleOnce(50.millisecond) {
     sendResponseAndShutdown(Failure(new TimeoutException))
   }
   // context.setReceiveTimeout(50 milliseconds) // this line is wrong:  ReceiveTimeout will be never sent

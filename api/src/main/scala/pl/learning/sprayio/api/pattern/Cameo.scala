@@ -1,9 +1,10 @@
-package pl.learning.sprayio.cameo
+package pl.learning.sprayio.api.pattern
 
 import akka.actor.Status.Failure
-import akka.actor.{ ActorRef, Actor }
+import akka.actor.{Actor, ActorRef}
 import akka.event.LoggingReceive
-import pl.learning.sprayio.{ MessageNotSupported, TimeoutException }
+import pl.learning.sprayio.{MessageNotSupported, TimeoutException}
+
 import scala.concurrent.duration._
 
 trait Cameo {
@@ -12,7 +13,7 @@ trait Cameo {
   def originalSender: ActorRef
   def timeout: FiniteDuration = 250.milliseconds
 
-  def sendResponseAndShutdown(response: AnyRef) = {
+  def sendResponseAndShutdown(response: AnyRef): Unit = {
     timeoutMessenger.cancel()
     originalSender ! response
     context.stop(self)

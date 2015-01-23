@@ -1,4 +1,4 @@
-package pl.learning.sprayio.api
+package pl.learning.sprayio.api.pattern
 
 import akka.actor.ActorContext
 import akka.actor.Status.Failure
@@ -11,7 +11,7 @@ object NotifyOnError {
       unsafeCode
     } catch {
       case NonFatal(e) =>
-        context.sender ! Failure(e)
+        context.sender() ! Failure(e)
         throw e
     }
   }

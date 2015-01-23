@@ -18,9 +18,9 @@ class InfiniteLoopServiceA extends Actor with ActorLogging {
 
   case class SendWaitAndRepeat(org: ActorRef)
 
-  def receive = LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponse => {
-      self ! SendWaitAndRepeat(sender)
+      self ! SendWaitAndRepeat(sender())
     }
     case SendWaitAndRepeat(org) => {
       org ! ResponseA("Ala")
@@ -33,30 +33,30 @@ class InfiniteLoopServiceA extends Actor with ActorLogging {
 
 class ServiceA extends Actor with ActorLogging {
 
-  def receive = LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponse => {
-      sender ! ResponseA("Ala")
+      sender() ! ResponseA("Ala")
     }
   }
 }
 
 class ServiceB extends Actor with ActorLogging {
 
-  def receive = LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponse => {
-      sender ! ResponseB("ma")
+      sender() ! ResponseB("ma")
     }
   }
 }
 
 class RandomServiceB extends Actor with ActorLogging {
 
-  def receive = LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponse => {
       Random.nextInt(4) match {
-        case 0 => sender ! Failure(new Exception("Foo"))
+        case 0 => sender() ! Failure(new Exception("Foo"))
         case 1 =>
-        case _ => sender ! ResponseB("ma")
+        case _ => sender() ! ResponseB("ma")
       }
     }
   }
@@ -64,7 +64,7 @@ class RandomServiceB extends Actor with ActorLogging {
 
 class NoResponseServiceB extends Actor with ActorLogging {
 
-  def receive = LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponse => {
     }
   }
@@ -72,9 +72,9 @@ class NoResponseServiceB extends Actor with ActorLogging {
 
 class ServiceC extends Actor with ActorLogging {
 
-  def receive = LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponse => {
-      sender ! ResponseC("kota")
+      sender() ! ResponseC("kota")
     }
   }
 }

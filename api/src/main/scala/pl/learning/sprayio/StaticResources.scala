@@ -1,9 +1,8 @@
 package pl.learning.sprayio
 
-import pl.learning.sprayio.Aquarium._
-import spray.routing.Directives
+import spray.routing.HttpService
 
-trait StaticResources extends Directives {
+trait StaticResources extends HttpService {
 
   lazy val staticResources = {
     pathEndOrSingleSlash {

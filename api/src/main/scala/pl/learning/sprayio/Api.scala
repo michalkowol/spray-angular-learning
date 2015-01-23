@@ -16,12 +16,12 @@ class Api
   with DivideHttpService
   with CameoRoute {
 
-  def receive = runRoute {
+  def receive: Receive = runRoute {
     pathPrefix("api") {
       healthRoute ~
-        gatheringRoute ~
-        divideRoute ~
-        cameoRoute
+      gatheringRoute ~
+      divideRoute ~
+      cameoRoute
     } ~
       staticResources
   }

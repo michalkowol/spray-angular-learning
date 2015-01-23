@@ -4,16 +4,16 @@ import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import pl.learning.sprayio.api.PropsFactory
+import pl.learning.sprayio.api.pattern.PropsFactory
 
 object GatheringActor {
-  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) = {
+  def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props = {
     Props(new GatheringActor(originalSender, serviceA, serviceB, serviceC))
   }
 }
 
 case class GatheringPropsFactory(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends PropsFactory {
-  def props(originalSender: ActorRef) = GatheringActor.props(originalSender, serviceA, serviceB, serviceC)
+  def props(originalSender: ActorRef): Props = GatheringActor.props(originalSender, serviceA, serviceB, serviceC)
 }
 
 class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
@@ -22,7 +22,7 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
   private var responseB = Option.empty[String]
   private var responseC = Option.empty[String]
 
-  def receive = LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponseABC =>
       serviceA ! GetResponse
       serviceB ! GetResponse
