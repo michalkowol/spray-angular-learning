@@ -8,6 +8,7 @@
     var browserify = require('gulp-browserify');
     var stylus = require('gulp-stylus');
     var nib = require('nib');
+    var sourcemaps = require('gulp-sourcemaps');
     var prefix = require('gulp-autoprefixer');
     var uglify = require('gulp-uglify');
     var minifycss = require('gulp-minify-css');
@@ -52,14 +53,9 @@
 
     gulp.task('stylus', function () {
         return gulp.src('app/css/**/*.styl')
-            .pipe(stylus({
-                use: [nib()],
-                sourcemap: {
-                    inline: true,
-                    sourceRoot: '..',
-                    basePath: 'css'
-                }
-            }))
+            .pipe(sourcemaps.init())
+            .pipe(stylus({use: [nib()]}))
+            .pipe(sourcemaps.write())
             .pipe(gulp.dest('dist/css'))
             .pipe(connect.reload());
     });
@@ -72,7 +68,8 @@
     gulp.task('usemin', function () {
         return gulp.src('dist/**/*.html')
             .pipe(usemin({
-                css: [minifycss(), 'concat', prefix()],
+                //css: [minifycss(), 'concat', prefix()],
+                css: ['concat', prefix()],
                 js: [uglify()]
             }))
             .pipe(gulp.dest('dist'));
