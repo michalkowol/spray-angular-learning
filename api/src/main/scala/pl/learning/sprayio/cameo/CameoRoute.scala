@@ -13,7 +13,7 @@ object ActorPerRequest {
 
 class ActorPerRequest(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
 
-  def receive: Receive =  LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponseABC =>
       val cameo = context.actorOf(CameoActor2.props(self, serviceA, serviceB, serviceC))
       cameo ! GetResponseABC

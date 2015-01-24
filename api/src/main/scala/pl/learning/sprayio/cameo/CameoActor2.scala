@@ -19,7 +19,7 @@ class CameoActor2(val originalSender: ActorRef, serviceA: ActorRef, serviceB: Ac
   private var responseFromServiceB = Option.empty[String]
   private var responseFromServiceC = Option.empty[String]
 
-  def receive: Receive =  LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case GetResponseABC =>
       serviceA ! GetResponse
       serviceB ! GetResponse

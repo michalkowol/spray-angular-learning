@@ -5,7 +5,6 @@ fork in run := true
 incOptions := incOptions.value.withNameHashing(true)
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
-defaultScalariformSettings
 jacoco.settings
 Revolver.settings
 

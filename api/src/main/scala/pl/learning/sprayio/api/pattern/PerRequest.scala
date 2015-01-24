@@ -1,14 +1,14 @@
 package pl.learning.sprayio.api.pattern
 
 import akka.actor.Status.Failure
-import akka.actor.SupervisorStrategy.{Decider, Stop}
+import akka.actor.SupervisorStrategy.{ Decider, Stop }
 import akka.actor._
 import akka.event.LoggingReceive
 import org.json4s.DefaultFormats
 import pl.learning.sprayio.TimeoutException
-import pl.learning.sprayio.api.{Error, Validation}
+import pl.learning.sprayio.api.{ Error, Validation }
 import spray.http.StatusCode
-import spray.http.StatusCodes.{BadRequest, InternalServerError, OK, RequestTimeout}
+import spray.http.StatusCodes.{ BadRequest, InternalServerError, OK, RequestTimeout }
 import spray.httpx.Json4sSupport
 import spray.routing.RequestContext
 
@@ -44,7 +44,7 @@ trait PerRequest extends Actor with ActorLogging with Json4sSupport {
   context.setReceiveTimeout(timeout)
   target ! message
 
-  def receive: Receive =  LoggingReceive {
+  def receive: Receive = LoggingReceive {
     case validation: Validation => complete(BadRequest, validation)
     case Failure(exception) => complete(InternalServerError, Error(exception.getMessage))
     case ReceiveTimeout => complete(RequestTimeout, new TimeoutException)

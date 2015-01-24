@@ -8,20 +8,20 @@ import pl.learning.sprayio.cameo.CameoRoute
 import spray.routing.HttpServiceActor
 
 class Api
-  extends HttpServiceActor
-  with ActorLogging
-  with HealthHttpService
-  with GatheringHttpService
-  with StaticResources
-  with DivideHttpService
-  with CameoRoute {
+    extends HttpServiceActor
+    with ActorLogging
+    with HealthHttpService
+    with GatheringHttpService
+    with StaticResources
+    with DivideHttpService
+    with CameoRoute {
 
   def receive: Receive = runRoute {
     pathPrefix("api") {
       healthRoute ~
-      gatheringRoute ~
-      divideRoute ~
-      cameoRoute
+        gatheringRoute ~
+        divideRoute ~
+        cameoRoute
     } ~
       staticResources
   }

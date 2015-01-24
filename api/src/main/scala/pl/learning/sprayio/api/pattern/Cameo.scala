@@ -1,9 +1,9 @@
 package pl.learning.sprayio.api.pattern
 
 import akka.actor.Status.Failure
-import akka.actor.{Actor, ActorRef}
+import akka.actor.{ Actor, ActorRef }
 import akka.event.LoggingReceive
-import pl.learning.sprayio.{MessageNotSupported, TimeoutException}
+import pl.learning.sprayio.{ MessageNotSupported, TimeoutException }
 
 import scala.concurrent.duration._
 
