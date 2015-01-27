@@ -22,13 +22,12 @@ object PerRequest {
   }
   case class PerRequestWithActorRef(ctx: RequestContext, target: ActorRef, message: Any, timeout: Duration) extends PerRequest
 
-  object PerRequestWithPropsFactory {
-    def props(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration): Props =
-      Props(new PerRequestWithPropsFactory(ctx, propsFactory, message, timeout))
+  object PerRequestWithActorRefMaker {
+    def props(ctx: RequestContext, actorRefMaker: ActorRefMaker, message: Any, timeout: Duration): Props =
+      Props(new PerRequestWithActorRefMaker(ctx, actorRefMaker, message, timeout))
   }
-  case class PerRequestWithPropsFactory(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration) extends PerRequest {
-    lazy val props = propsFactory.props(self)
-    lazy val target = context.actorOf(props)
+  case class PerRequestWithActorRefMaker(ctx: RequestContext, actorRefMaker: ActorRefMaker, message: Any, timeout: Duration) extends PerRequest {
+    lazy val target = actorRefMaker(context, self)
   }
 }
 
@@ -69,11 +68,19 @@ trait PerRequest extends Actor with ActorLogging with Json4sSupport {
 trait PerRequestCreator {
   implicit def actorRefFactory: ActorRefFactory
 
-  def perRequestWithRef(ctx: RequestContext, target: ActorRef, message: Any, timeout: Duration = 500.milliseconds): ActorRef = {
+  def perRequest(ctx: RequestContext, target: ActorRef, message: Any): ActorRef = {
+    perRequest(ctx, target, message, 500.milliseconds)
+  }
+
+  def perRequest(ctx: RequestContext, target: ActorRef, message: Any, timeout: Duration): ActorRef = {
     actorRefFactory.actorOf(PerRequest.PerRequestWithActorRef.props(ctx, target, message, timeout))
   }
 
-  def perRequest(ctx: RequestContext, propsFactory: PropsFactory, message: Any, timeout: Duration = 500.milliseconds): ActorRef = {
-    actorRefFactory.actorOf(PerRequest.PerRequestWithPropsFactory.props(ctx, propsFactory, message, timeout))
+  def perRequest(ctx: RequestContext, actorRefMaker: ActorRefMaker, message: Any): ActorRef = {
+    perRequest(ctx, actorRefMaker, message, 500.milliseconds)
+  }
+
+  def perRequest(ctx: RequestContext, actorRefMaker: ActorRefMaker, message: Any, timeout: Duration): ActorRef = {
+    actorRefFactory.actorOf(PerRequest.PerRequestWithActorRefMaker.props(ctx, actorRefMaker, message, timeout))
   }
 }

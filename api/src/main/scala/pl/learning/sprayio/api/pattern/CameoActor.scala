@@ -7,15 +7,18 @@ import pl.learning.sprayio.{ MessageNotSupported, TimeoutException }
 
 import scala.concurrent.duration._
 
-trait Cameo {
-  this: Actor =>
+trait CameoActor extends Actor {
 
   def originalSender: ActorRef
   def timeout: FiniteDuration = 250.milliseconds
 
-  def sendResponseAndShutdown(response: AnyRef): Unit = {
-    timeoutMessenger.cancel()
+  def replyAndStop(response: Any): Unit = {
     originalSender ! response
+    stop
+  }
+
+  def stop: Unit = {
+    timeoutMessenger.cancel()
     context.stop(self)
   }
 
@@ -24,10 +27,10 @@ trait Cameo {
     onTimeout
   }
 
-  def onTimeout: Unit = sendResponseAndShutdown(Failure(new TimeoutException))
+  def onTimeout: Unit = replyAndStop(Failure(new TimeoutException))
 
   def onError: Receive = LoggingReceive {
-    case f: Failure => sendResponseAndShutdown(f)
-    case _ => sendResponseAndShutdown(Failure(new MessageNotSupported))
+    case f: Failure => replyAndStop(f)
+    case _ => replyAndStop(Failure(new MessageNotSupported))
   }
 }

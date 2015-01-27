@@ -4,7 +4,7 @@ import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
 import pl.learning.sprayio._
-import pl.learning.sprayio.api.pattern.PropsFactory
+import pl.learning.sprayio.api.pattern.ActorRefMaker
 
 object GatheringActor {
   def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props = {
@@ -12,8 +12,10 @@ object GatheringActor {
   }
 }
 
-case class GatheringPropsFactory(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends PropsFactory {
-  def props(originalSender: ActorRef): Props = GatheringActor.props(originalSender, serviceA, serviceB, serviceC)
+case class GatheringActorRefMaker(serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends ActorRefMaker {
+  override def create(context: ActorRefFactory, originalSender: ActorRef): ActorRef = {
+    context.actorOf(GatheringActor.props(originalSender, serviceA, serviceB, serviceC))
+  }
 }
 
 class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
@@ -33,22 +35,22 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
   private def waitingForResponses = LoggingReceive {
     case ResponseA(a) =>
       responseA = Some(a)
-      collectResults()
+      collectResults
     case ResponseB(b) =>
       responseB = Some(b)
-      collectResults()
+      collectResults
     case ResponseC(c) =>
       responseC = Some(c)
-      collectResults()
+      collectResults
     case failure: Failure =>
       sendResponseAndShutdown(failure)
   }
 
-  private def collectResults() = (responseA, responseB, responseC) match {
-    case (Some(a), Some(b), Some(c)) =>
-      sendResponseAndShutdown(ResponseABC(a, b, c))
-    case _ =>
-  }
+  private def collectResults = for {
+    a <- responseA
+    b <- responseB
+    c <- responseC
+  } yield sendResponseAndShutdown(ResponseABC(a, b, c))
 
   private def sendResponseAndShutdown(response: Any) = {
     originalSender ! response

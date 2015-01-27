@@ -17,6 +17,6 @@ trait DivideHttpService extends HttpService with PerRequestCreator {
   }
 
   private def divideNumbers(message: Any): Route = { ctx =>
-    perRequestWithRef(ctx, divideClient, message)
+    perRequest(ctx, divideClient, message)
   }
 }

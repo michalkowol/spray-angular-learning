@@ -3,8 +3,9 @@ package pl.learning.sprayio.cameo
 import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
-import pl.learning.sprayio._
 import spray.routing.{ HttpService, RequestContext }
+
+import pl.learning.sprayio.api.gathering._
 
 object ActorPerRequest {
   def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =
@@ -15,7 +16,7 @@ class ActorPerRequest(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRe
 
   def receive: Receive = LoggingReceive {
     case GetResponseABC =>
-      val cameo = context.actorOf(CameoActor2.props(self, serviceA, serviceB, serviceC))
+      val cameo = context.actorOf(CameoActorWithTrait.props(self, serviceA, serviceB, serviceC))
       cameo ! GetResponseABC
     case ResponseABC(a, b, c) =>
       ctx.complete(s"$a $b $c")
