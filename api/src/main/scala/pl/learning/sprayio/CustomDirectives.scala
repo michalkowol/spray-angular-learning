@@ -1,6 +1,6 @@
 package pl.learning.sprayio
 
-import spray.routing.{ Directives, Route }
+import spray.routing.{Directives, Route}
 import spray.http.MediaTypes
 
 trait CustomDirectives extends Directives {

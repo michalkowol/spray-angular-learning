@@ -2,7 +2,7 @@ package pl.learning.sprayio.api.divide
 
 import akka.actor.Props
 import pl.learning.sprayio.api.pattern.PerRequestCreator
-import spray.routing.{ Route, HttpService }
+import spray.routing.{Route, HttpService}
 
 trait DivideHttpService extends HttpService with PerRequestCreator {
 

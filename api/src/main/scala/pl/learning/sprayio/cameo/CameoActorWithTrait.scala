@@ -2,7 +2,7 @@ package pl.learning.sprayio.cameo
 
 import scala.concurrent.duration._
 
-import akka.actor.{ ActorLogging, Props, ActorRef }
+import akka.actor.{ActorLogging, Props, ActorRef}
 import akka.event.LoggingReceive
 
 import pl.learning.sprayio.api.pattern.CameoActor

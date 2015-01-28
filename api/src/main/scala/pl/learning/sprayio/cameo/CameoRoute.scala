@@ -3,7 +3,7 @@ package pl.learning.sprayio.cameo
 import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
-import spray.routing.{ HttpService, RequestContext }
+import spray.routing.{HttpService, RequestContext}
 
 import pl.learning.sprayio.api.gathering._
 

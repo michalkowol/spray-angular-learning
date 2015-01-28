@@ -1,9 +1,11 @@
 import scalariform.formatter.preferences._
 
-defaultScalariformSettings
+scalariformSettings
 
 ScalariformKeys.preferences := ScalariformKeys.preferences.value
-  .setPreference(AlignParameters, true)
+  .setPreference(AlignArguments, true)
   .setPreference(DoubleIndentClassDeclaration, true)
   .setPreference(FormatXml, false)
   .setPreference(PreserveSpaceBeforeArguments, true)
+  .setPreference(SpacesAroundMultiImports, false)
+  .setPreference(SpacesWithinPatternBinders, false)
