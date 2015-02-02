@@ -1,6 +1,8 @@
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{Matchers, FlatSpec}
+package pl.learning.com
+
 import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar
+import org.scalatest.{FlatSpec, Matchers}
 
 object CompanionObjectSpec {
 
