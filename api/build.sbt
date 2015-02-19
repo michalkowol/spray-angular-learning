@@ -24,9 +24,10 @@ libraryDependencies += "com.paypal" %% "cascade-common" % cascadeVersion
 libraryDependencies += "com.paypal" %% "cascade-http" % cascadeVersion
 libraryDependencies += "com.paypal" %% "cascade-akka" % cascadeVersion
 libraryDependencies += "com.paypal" %% "cascade-json" % cascadeVersion
+libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % "2.4.1"
+libraryDependencies += "org.codehaus.woodstox" % "woodstox-core-asl" % "4.4.1"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.3" % "test"
 libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test"
 libraryDependencies += "io.spray" %% "spray-testkit" % sprayVersion % "test"
 libraryDependencies += "com.typesafe.akka" %% "akka-actor-tests" % akkaVersion % "test"
-
