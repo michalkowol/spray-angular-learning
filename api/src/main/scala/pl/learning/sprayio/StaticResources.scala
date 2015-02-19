@@ -8,7 +8,7 @@ trait StaticResources extends HttpService {
     pathEndOrSingleSlash {
       getFromResource("index.html")
     } ~ path("api" / "products") {
-      getFromResource("data/store-products.json")
-    } ~ getFromResourceDirectory("")
+      getFromResource("assets/data/store-products.json")
+    } ~ getFromResourceDirectory("assets")
   }
 }
