@@ -1,12 +1,11 @@
 package pl.learning.sprayio.cameo
 
-import scala.concurrent.duration._
-
-import akka.actor.{ActorLogging, Props, ActorRef}
+import akka.actor.{ActorLogging, ActorRef, Props}
 import akka.event.LoggingReceive
-
-import pl.learning.sprayio.api.pattern.CameoActor
 import pl.learning.sprayio.api.gathering._
+import pl.learning.sprayio.api.pattern.CameoActor
+
+import scala.concurrent.duration._
 
 object CameoActorWithTrait {
   def props(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =

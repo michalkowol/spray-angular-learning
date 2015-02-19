@@ -4,6 +4,7 @@ import akka.actor.Status.Failure
 import akka.actor.SupervisorStrategy.{Decider, Stop}
 import akka.actor._
 import akka.event.LoggingReceive
+import com.paypal.cascade.akka.actor.ServiceActor
 import org.json4s.DefaultFormats
 import pl.learning.sprayio.TimeoutException
 import pl.learning.sprayio.api.{Error, Validation}
@@ -31,7 +32,7 @@ object PerRequest {
   }
 }
 
-trait PerRequest extends Actor with ActorLogging with Json4sSupport {
+trait PerRequest extends ServiceActor with Json4sSupport {
 
   val ctx: RequestContext
   val target: ActorRef

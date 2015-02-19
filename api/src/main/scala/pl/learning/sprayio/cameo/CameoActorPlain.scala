@@ -3,10 +3,11 @@ package pl.learning.sprayio.cameo
 import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
+import com.paypal.cascade.akka.actor.ServiceActor
 import pl.learning.sprayio._
-import scala.concurrent.duration._
-
 import pl.learning.sprayio.api.gathering._
+
+import scala.concurrent.duration._
 
 case object WorkTimeout
 
@@ -15,7 +16,7 @@ object CameoActorPlain {
     Props(new CameoActorPlain(originalSender, serviceA, serviceB, serviceC))
 }
 
-class CameoActorPlain(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
+class CameoActorPlain(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends ServiceActor {
 
   private var responseFromServiceA = Option.empty[String]
   private var responseFromServiceB = Option.empty[String]

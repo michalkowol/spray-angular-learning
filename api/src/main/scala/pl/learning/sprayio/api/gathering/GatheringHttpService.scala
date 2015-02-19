@@ -1,7 +1,6 @@
 package pl.learning.sprayio.api.gathering
 
 import akka.actor.Props
-import pl.learning.sprayio._
 import pl.learning.sprayio.api.pattern.PerRequestCreator
 import spray.routing._
 

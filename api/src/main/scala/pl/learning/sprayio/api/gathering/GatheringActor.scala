@@ -1,9 +1,8 @@
 package pl.learning.sprayio.api.gathering
 
-import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
-import pl.learning.sprayio._
+import com.paypal.cascade.akka.actor.ServiceActor
 import pl.learning.sprayio.api.pattern.ActorRefMaker
 
 object GatheringActor {
@@ -18,7 +17,7 @@ case class GatheringActorRefMaker(serviceA: ActorRef, serviceB: ActorRef, servic
   }
 }
 
-class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
+class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends ServiceActor {
 
   private var responseA = Option.empty[String]
   private var responseB = Option.empty[String]
@@ -35,26 +34,18 @@ class GatheringActor(originalSender: ActorRef, serviceA: ActorRef, serviceB: Act
   private def waitingForResponses = LoggingReceive {
     case ResponseA(a) =>
       responseA = Some(a)
-      collectResults
+      collectResults()
     case ResponseB(b) =>
       responseB = Some(b)
-      collectResults
+      collectResults()
     case ResponseC(c) =>
       responseC = Some(c)
-      collectResults
-    case failure: Failure =>
-      sendResponseAndShutdown(failure)
+      collectResults()
   }
 
-  private def collectResults = for {
-    a <- responseA
-    b <- responseB
-    c <- responseC
-  } yield sendResponseAndShutdown(ResponseABC(a, b, c))
-
-  private def sendResponseAndShutdown(response: Any) = {
-    originalSender ! response
-    context.stop(self)
+  private def collectResults(): Unit = (responseA, responseB, responseC) match {
+    case (Some(a), Some(b), Some(c)) => originalSender ! ResponseABC(a, b, c)
+    case _ =>
   }
 
   override def postStop: Unit = {

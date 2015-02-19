@@ -1,10 +1,10 @@
-package pl.learning.com
+package com.paypal.cascade
 
+import com.paypal.cascade.common.option._
 import org.scalatest.{Matchers, FlatSpec}
 import com.paypal.cascade.json._
-import com.paypal.cascade.common.option._
 
-object CascadeSpec {
+object CascadeJsonSpec {
   case class Inner(a: Int, b: Option[String])
   case class Outer(a: Int, b: String, c: Inner)
   case class OuterWithList(a: Int, b: String, c: Seq[Inner])
@@ -17,9 +17,9 @@ object CascadeSpec {
   }
 }
 
-class CascadeSpec extends FlatSpec with Matchers {
+class CascadeJsonSpec extends FlatSpec with Matchers {
 
-  import CascadeSpec._
+  import com.paypal.cascade.CascadeJsonSpec._
 
   "Cascade" should "convert case class to JSON" in {
     // given

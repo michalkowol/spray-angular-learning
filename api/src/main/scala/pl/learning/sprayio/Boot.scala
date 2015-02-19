@@ -1,9 +1,8 @@
 package pl.learning.sprayio
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ActorSystem, Props}
 import akka.io.IO
 import spray.can.Http
-import spray.can.server.ServerSettings
 
 object Boot {
   def main(args: Array[String]): Unit = {

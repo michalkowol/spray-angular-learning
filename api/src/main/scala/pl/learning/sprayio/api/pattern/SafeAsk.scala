@@ -1,13 +1,12 @@
 package pl.learning.sprayio.api.pattern
 
-import akka.actor.{ActorRef, Actor}
 import akka.actor.Status.Failure
+import akka.actor.{Actor, ActorRef}
 import akka.util.Timeout
 
 import scala.concurrent.Future
-import scala.reflect.ClassTag
+import scala.reflect.{ClassTag, _}
 import scala.util.control.NonFatal
-import scala.reflect._
 
 sealed trait ReplyAction[T]
 case class ReplyWith[T](t: T) extends ReplyAction[T]

@@ -1,7 +1,7 @@
-import collection.mutable.Stack
-
-import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.mock.MockitoSugar
+import org.scalatest.{FlatSpec, Matchers}
+
+import scala.collection.mutable.Stack
 
 class ExampleSpec extends FlatSpec with Matchers with MockitoSugar {
 

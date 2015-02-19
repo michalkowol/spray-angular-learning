@@ -2,9 +2,8 @@ package pl.learning.sprayio
 
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FlatSpec, Matchers}
-import spray.testkit.ScalatestRouteTest
 import spray.routing.Directives
-import spray.http.{StatusCodes, MediaTypes}
+import spray.testkit.ScalatestRouteTest
 
 class SpraySpec extends FlatSpec with Matchers with MockitoSugar with ScalatestRouteTest with Directives {
   //  it should "get all fishes as JSON" in {

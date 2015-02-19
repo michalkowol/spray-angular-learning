@@ -3,16 +3,16 @@ package pl.learning.sprayio.cameo
 import akka.actor.Status.Failure
 import akka.actor._
 import akka.event.LoggingReceive
-import spray.routing.{HttpService, RequestContext}
-
+import com.paypal.cascade.akka.actor.ServiceActor
 import pl.learning.sprayio.api.gathering._
+import spray.routing.{HttpService, RequestContext}
 
 object ActorPerRequest {
   def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =
     Props(new ActorPerRequest(ctx, serviceA, serviceB, serviceC))
 }
 
-class ActorPerRequest(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends Actor with ActorLogging {
+class ActorPerRequest(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef) extends ServiceActor {
 
   def receive: Receive = LoggingReceive {
     case GetResponseABC =>
