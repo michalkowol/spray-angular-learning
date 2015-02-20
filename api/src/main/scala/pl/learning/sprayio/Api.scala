@@ -14,6 +14,7 @@ class Api
     with StaticResources
     with DivideHttpService
     with AggregatorHttpService
+    with XmlJson
     with CameoRoute {
 
   def receive: Receive = runRoute {
@@ -22,6 +23,7 @@ class Api
         gatheringRoute ~
         divideRoute ~
         aggregateRoute ~
+        xmlJson ~
         cameoRoute
     } ~
       staticResources
