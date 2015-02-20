@@ -1,7 +1,6 @@
 package com.paypal.cascade.yaml
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 
 import scala.util.Try

@@ -3,17 +3,18 @@ package com.paypal.cascade
 import org.scalatest.{Matchers, FlatSpec}
 import com.paypal.cascade.json._
 import com.paypal.cascade.xml._
+import com.paypal.cascade.yaml._
 import com.paypal.cascade.common.option._
 
-object JacksonWithJsonAndXmlSpec {
+object JacksonWithJsonXmlYamlSpec {
   case class Person(name: String, age: Int, username: Option[String])
   case class City(addresses: Seq[Address])
   case class Address(street: String)
 }
 
-class JacksonWithJsonAndXmlSpec extends FlatSpec with Matchers {
+class JacksonWithJsonXmlYamlSpec extends FlatSpec with Matchers {
 
-  import JacksonWithJsonAndXmlSpec._
+  import JacksonWithJsonXmlYamlSpec._
 
   val person = new Person("michal", 25, "kowolm".some)
 
@@ -23,12 +24,34 @@ class JacksonWithJsonAndXmlSpec extends FlatSpec with Matchers {
     // then
     personJson shouldBe """{"name":"michal","age":25,"username":"kowolm"}"""
   }
+
   it should "marshal Person to XML" in {
     // when
     val personXml = person.toXml.get
     // then
     personXml shouldBe """<Person><name>michal</name><age>25</age><username><username>kowolm</username></username></Person>"""
   }
+
+  it should "marshal Person to YAML" in {
+    // when
+    val personYaml = person.toYaml.get
+    // then
+    personYaml shouldBe """---
+                          |name: "michal"
+                          |age: 25
+                          |username: "kowolm"
+                          |""".stripMargin
+  }
+
+  it should "unmarshal Person from JSON" in {
+    // given
+    val personJson = """{"name":"michal","age":25,"username":"kowolm"}"""
+    // when
+    val personFromJson = personJson.fromJson[Person].get
+    // then
+    personFromJson shouldBe person
+  }
+
   it should "unmarshal Person from XML" in {
     // given
     val personXml = """<person><name>michal</name><age>25</age><username>kowolm</username></person>"""
@@ -37,12 +60,17 @@ class JacksonWithJsonAndXmlSpec extends FlatSpec with Matchers {
     // then
     personFromXml shouldBe person
   }
-  it should "unmarshal Person from JSON" in {
+
+  it should "unmarshal Person from YAML" in {
     // given
-    val personJson = """{"name":"michal","age":25,"username":"kowolm"}"""
+    val personYaml = """---
+                       |name: "michal"
+                       |age: 25
+                       |username: "kowolm"
+                       |""".stripMargin
     // when
-    val personFromJson = personJson.fromJson[Person].get
+    val personFromYaml = personYaml.fromYaml[Person].get
     // then
-    personFromJson shouldBe person
+    personFromYaml shouldBe person
   }
 }
