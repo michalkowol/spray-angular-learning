@@ -7,10 +7,12 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 jacoco.settings
 Revolver.settings
+Revolver.enableDebugging()
 
 val sprayVersion = "1.3.2"
 val akkaVersion = "2.3.9"
 val cascadeVersion = "0.4.1"
+val jacksonVersion = "2.4.1"
 
 libraryDependencies += "org.scaldi" %% "scaldi-akka" % "0.4"
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.2"
@@ -24,7 +26,8 @@ libraryDependencies += "com.paypal" %% "cascade-common" % cascadeVersion
 libraryDependencies += "com.paypal" %% "cascade-http" % cascadeVersion
 libraryDependencies += "com.paypal" %% "cascade-akka" % cascadeVersion
 libraryDependencies += "com.paypal" %% "cascade-json" % cascadeVersion
-libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % "2.4.1"
+libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % jacksonVersion
+libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % jacksonVersion
 libraryDependencies += "org.codehaus.woodstox" % "woodstox-core-asl" % "4.4.1"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.3" % "test"

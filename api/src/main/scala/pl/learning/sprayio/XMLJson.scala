@@ -1,10 +1,11 @@
 package pl.learning.sprayio
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import spray.routing.{Route, HttpService}
 import pl.learning.sprayio.marshallers._
 
 case class Address(city: String, street: String)
-case class Person(name: String, age: Int, address: Seq[Address])
+case class Person(@JsonProperty("username") name: String, age: Int, address: Seq[Address])
 
 trait XmlJson extends HttpService {
 
