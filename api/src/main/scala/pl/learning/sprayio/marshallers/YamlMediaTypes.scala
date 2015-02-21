@@ -9,7 +9,7 @@ object YamlMediaTypes {
   val `application/yaml` = MediaTypes.register(MediaType.custom("application/yaml"))
   val `application/x-yaml` = MediaTypes.register(MediaType.custom("application/x-yaml"))
 
-  val yamlSupportedContentTypes: Seq[ContentType] = Seq(
+  val yamlSupportedMediaTypes = Seq(
     `text/yaml`,
     `text/x-yaml`,
     `application/yaml`,
