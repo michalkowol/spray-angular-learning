@@ -9,6 +9,6 @@ object Boot {
     implicit val system = ActorSystem("api-system")
     val api = system.actorOf(Props[Api], "api")
 
-    IO(Http) ! Http.Bind(api, "0.0.0.0", port = 8080)
+    IO(Http) ! Http.Bind(api, "0.0.0.0", port = Settings.port)
   }
 }

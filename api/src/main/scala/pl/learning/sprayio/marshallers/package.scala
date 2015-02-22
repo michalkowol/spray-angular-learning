@@ -15,11 +15,11 @@ import scala.util.{Failure, Success}
 
 package object marshallers {
 
-//  private val xmlSupportedMediaTypes = Seq(
-//    `text/xml`,
-//    `application/xml`,
-//    `application/xhtml+xml`
-//  )
+  //  private val xmlSupportedMediaTypes = Seq(
+  //    `text/xml`,
+  //    `application/xml`,
+  //    `application/xhtml+xml`
+  //  )
   val xmlSupportedMediaTypes = Seq.empty[MediaType]
 
   private val supportedMediaTypes =
@@ -41,14 +41,14 @@ package object marshallers {
   private val yamlMarshaller =
     Marshaller.delegate[Any, String](yamlSupportedContentTypes: _*) { value => YamlUtil.toYaml(value).get }
 
-  implicit def futureMarshaller[T](implicit ec: ExecutionContext) = Marshaller[Future[T]] { (value, ctx) =>
+  implicit def futureMarshaller[T](implicit ec: ExecutionContext) = Marshaller[Future[T]] { (value, ctx) => // scalastyle:ignore
     value.onComplete {
       case Success(v) => marshaller(v, ctx)
       case Failure(error) => ctx.handleError(error)
     }
   }
 
-  implicit def marshaller[T] = Marshaller[T] { (value, ctx) =>
+  implicit def marshaller[T] = Marshaller[T] { (value, ctx) => // scalastyle:ignore
     ctx.tryAccept(supportedContentTypes) match {
       case Some(contentType) if jsonContentType(contentType) =>
         jsonMarshaller(value, ctx)
@@ -61,7 +61,7 @@ package object marshallers {
     }
   }
 
-  implicit def unmarshaller[T: Manifest]: Unmarshaller[T] = Unmarshaller[T](supportedContentTypeRange : _*) {
+  implicit def unmarshaller[T: Manifest]: Unmarshaller[T] = Unmarshaller[T](supportedContentTypeRange: _*) {
     case HttpEntity.NonEmpty(contentType, data) if jsonContentType(contentType) =>
       JsonUtil.fromJson[T](data.asString).get
     case HttpEntity.NonEmpty(contentType, data) if xmlContentType(contentType) =>

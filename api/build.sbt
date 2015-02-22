@@ -29,6 +29,9 @@ libraryDependencies += "com.paypal" %% "cascade-json" % cascadeVersion
 libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % jacksonVersion
 libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % jacksonVersion
 libraryDependencies += "org.codehaus.woodstox" % "woodstox-core-asl" % "4.4.1"
+libraryDependencies += "com.typesafe.slick" %% "slick" % "3.0.0-RC1"
+libraryDependencies += "com.h2database" % "h2" % "1.4.185"
+libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.3" % "test"
 libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test"

@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 trait CameoActor extends CommonActor {
 
   def originalSender: ActorRef
-  def timeout: FiniteDuration = 250.milliseconds
+  def timeout: FiniteDuration = 30.seconds
 
   def replyAndStop(response: Any): Unit = {
     originalSender ! response

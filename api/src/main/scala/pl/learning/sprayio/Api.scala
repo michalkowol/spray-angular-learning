@@ -1,5 +1,7 @@
 package pl.learning.sprayio
 
+import pl.learning.sprayio.api.contentnegotiation.ContentNegotiation
+import pl.learning.sprayio.api.db.DBAccess
 import pl.learning.sprayio.api.divide.DivideHttpService
 import pl.learning.sprayio.api.gathering.GatheringHttpService
 import pl.learning.sprayio.api.health.HealthHttpService
@@ -15,6 +17,7 @@ class Api
     with DivideHttpService
     with AggregatorHttpService
     with ContentNegotiation
+    with DBAccess
     with CameoRoute {
 
   def receive: Receive = runRoute {
@@ -24,6 +27,7 @@ class Api
         divideRoute ~
         aggregateRoute ~
         contentNegotiation ~
+        db ~
         cameoRoute
     } ~
       staticResources

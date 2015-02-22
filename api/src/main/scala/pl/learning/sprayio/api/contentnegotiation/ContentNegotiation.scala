@@ -1,18 +1,18 @@
-package pl.learning.sprayio
+package pl.learning.sprayio.api.contentnegotiation
 
 import pl.learning.sprayio.marshallers._
-import spray.routing.{Route, HttpService}
+import spray.routing.{HttpService, Route}
+
 import scala.collection.mutable.{MutableList => MList}
 
 object ContentNegotiation {
   case class Address(city: String, street: String)
   case class Person(name: String, age: Int, addresses: Seq[Address])
-  case class Error(message: String)
 }
 
 trait ContentNegotiation extends HttpService {
 
-  import ContentNegotiation._
+  import pl.learning.sprayio.api.contentnegotiation.ContentNegotiation._
   private val people = MList(
     Person("michal", 25, Seq(Address("Gliwice", "Chemiczna"), Address("Warszawa", "Pulawska")))
   )

@@ -8,6 +8,9 @@ import scala.concurrent.Future
 import scala.reflect.{ClassTag, _}
 import scala.util.control.NonFatal
 
+import scala.language.higherKinds
+import scala.language.implicitConversions
+
 sealed trait ReplyAction[T]
 case class ReplyWith[T](t: T) extends ReplyAction[T]
 case class DoNotReply[T]() extends ReplyAction[T]

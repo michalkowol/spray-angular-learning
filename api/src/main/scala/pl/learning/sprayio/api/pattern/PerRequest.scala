@@ -5,12 +5,11 @@ import akka.actor.SupervisorStrategy.{Decider, Stop}
 import akka.actor._
 import akka.event.LoggingReceive
 import com.paypal.cascade.akka.actor.ServiceActor
-import org.json4s.DefaultFormats
 import pl.learning.sprayio.TimeoutException
-import pl.learning.sprayio.api.{Error, Validation}
+import pl.learning.sprayio.api.{NotFound, Error, Validation}
+import pl.learning.sprayio.marshallers._
 import spray.http.StatusCode
-import spray.http.StatusCodes.{BadRequest, InternalServerError, OK, RequestTimeout}
-import spray.httpx.Json4sSupport
+import spray.http.StatusCodes.{BadRequest, InternalServerError, OK, RequestTimeout, NotFound => NotFoundCode}
 import spray.routing.RequestContext
 
 import scala.concurrent.duration._
@@ -32,22 +31,21 @@ object PerRequest {
   }
 }
 
-trait PerRequest extends ServiceActor with Json4sSupport {
+trait PerRequest extends ServiceActor {
 
   val ctx: RequestContext
   val target: ActorRef
   val message: Any
   val timeout: Duration
 
-  val json4sFormats = DefaultFormats
-
   context.setReceiveTimeout(timeout)
   target ! message
 
   def receive: Receive = LoggingReceive {
     case validation: Validation => complete(BadRequest, validation)
-    case Failure(exception) => complete(InternalServerError, Error(exception.getMessage))
-    case ReceiveTimeout => complete(RequestTimeout, new TimeoutException)
+    case notFound: NotFound => complete(NotFoundCode, notFound)
+    case Failure(exception) => complete(InternalServerError, Error(exception))
+    case ReceiveTimeout => complete(RequestTimeout, Error(new TimeoutException))
     case response: AnyRef => complete(OK, response)
   }
 
