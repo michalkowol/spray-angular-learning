@@ -10,13 +10,17 @@ import spray.httpx.marshalling.Marshaller
 import spray.http.MediaTypes._
 import spray.httpx.unmarshalling.Unmarshaller
 
+import scala.concurrent.{Future, ExecutionContext}
+import scala.util.{Failure, Success}
+
 package object marshallers {
 
-  private val  xmlSupportedMediaTypes = Seq(
-    `text/xml`,
-    `application/xml`,
-    `application/xhtml+xml`
-  )
+//  private val xmlSupportedMediaTypes = Seq(
+//    `text/xml`,
+//    `application/xml`,
+//    `application/xhtml+xml`
+//  )
+  val xmlSupportedMediaTypes = Seq.empty[MediaType]
 
   private val supportedMediaTypes =
     `application/json` +: (xmlSupportedMediaTypes ++ yamlSupportedMediaTypes)
@@ -37,7 +41,14 @@ package object marshallers {
   private val yamlMarshaller =
     Marshaller.delegate[Any, String](yamlSupportedContentTypes: _*) { value => YamlUtil.toYaml(value).get }
 
-  implicit val marshaller = Marshaller[Any] { (value, ctx) =>
+  implicit def futureMarshaller[T](implicit ec: ExecutionContext) = Marshaller[Future[T]] { (value, ctx) =>
+    value.onComplete {
+      case Success(v) => marshaller(v, ctx)
+      case Failure(error) => ctx.handleError(error)
+    }
+  }
+
+  implicit def marshaller[T] = Marshaller[T] { (value, ctx) =>
     ctx.tryAccept(supportedContentTypes) match {
       case Some(contentType) if jsonContentType(contentType) =>
         jsonMarshaller(value, ctx)
