@@ -1,7 +1,7 @@
 package pl.learning.sprayio
 
 import pl.learning.sprayio.api.contentnegotiation.ContentNegotiation
-import pl.learning.sprayio.api.db.DBAccess
+import pl.learning.sprayio.api.db.slick.DBAccess
 import pl.learning.sprayio.api.divide.DivideHttpService
 import pl.learning.sprayio.api.gathering.GatheringHttpService
 import pl.learning.sprayio.api.health.HealthHttpService

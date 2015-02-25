@@ -1,4 +1,4 @@
-package pl.learning.db.dto
+package pl.learning.db.slick.dto
 
 case class City(id: Int, name: String)
 case class Address(id: Int, street: String, cityId: Int)

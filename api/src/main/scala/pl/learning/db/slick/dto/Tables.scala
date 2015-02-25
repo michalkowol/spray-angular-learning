@@ -1,4 +1,4 @@
-package pl.learning.db.dto
+package pl.learning.db.slick.dto
 
 import slick.driver.PostgresDriver.api._
 

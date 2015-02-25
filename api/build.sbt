@@ -30,8 +30,9 @@ libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-
 libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % jacksonVersion
 libraryDependencies += "org.codehaus.woodstox" % "woodstox-core-asl" % "4.4.1"
 libraryDependencies += "com.typesafe.slick" %% "slick" % "3.0.0-RC1"
-libraryDependencies += "com.h2database" % "h2" % "1.4.185"
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
+libraryDependencies += "com.typesafe.play" %% "anorm" % "2.4.0-M2"
+libraryDependencies += "com.zaxxer" % "HikariCP-java6" % "2.3.2"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.3" % "test"
 libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test"

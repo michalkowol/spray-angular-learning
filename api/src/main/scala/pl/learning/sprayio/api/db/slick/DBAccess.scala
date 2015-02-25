@@ -1,11 +1,11 @@
-package pl.learning.sprayio.api.db
+package pl.learning.sprayio.api.db.slick
 
 import akka.actor._
 import akka.event.LoggingReceive
 import com.paypal.cascade.akka.actor.ServiceActor
 import com.paypal.cascade.common.option._
 import com.typesafe.scalalogging.slf4j.StrictLogging
-import pl.learning.db.dao.{AddressesDAO, PeopleAddressesDAO, PeopleDAO}
+import pl.learning.db.slick.dao.{AddressesDAO, PeopleAddressesDAO, PeopleDAO}
 import pl.learning.sprayio.api.NotFound
 import pl.learning.sprayio.api.pattern.{ActorRefMaker, CameoActor, PerRequestCreator}
 import pl.learning.sprayio.marshallers._
@@ -21,10 +21,10 @@ object DBAccess {
 
 trait DBAccess extends HttpService with StrictLogging with PerRequestCreator {
 
-  import DBAccess._
+  import pl.learning.sprayio.api.db.slick.DBAccess._
 
   def db: Route =
-    pathPrefix("people") {
+    pathPrefix("db" / "slick" / "people") {
       get {
         path(IntNumber) { id =>
           getPersonWithAddress {
@@ -44,7 +44,12 @@ trait DBAccess extends HttpService with StrictLogging with PerRequestCreator {
           }
         }
       }
-
+    } ~ pathPrefix("db" / "anorm" / "people") {
+      get {
+        complete {
+          pl.learning.db.anorm.dao.PeopleDAO.peopleWithAddresses
+        }
+      }
     }
 
   private def getPersonWithAddress(message: Any): Route = { ctx =>
@@ -81,7 +86,7 @@ object PersonUnmapperRefMaker extends ActorRefMaker {
 }
 class PersonUnmapper(val originalSender: ActorRef) extends CameoActor {
 
-  import pl.learning.db.dto._
+  import pl.learning.db.slick.dto._
 
   private val externalAccess = context.actorOf(Props[ExternalAccess], "ExternalAccess")
   private var addresses = Option.empty[Seq[(Address, City)]]
@@ -127,7 +132,7 @@ class PersonMapper(val originalSender: ActorRef) extends CameoActor {
 }
 
 object ExternalAccess {
-  import pl.learning.db.dto._
+  import pl.learning.db.slick.dto._
   case object GetPeople
   case class People(people: Seq[Person])
   case class GetPersonWithAddressById(id: Int)
@@ -142,9 +147,9 @@ object ExternalAccess {
 }
 class ExternalAccess extends ServiceActor {
 
-  import ExternalAccess._
   import akka.pattern.pipe
   import context.dispatcher
+  import pl.learning.sprayio.api.db.slick.ExternalAccess._
 
   override def receive: Receive = LoggingReceive {
     case GetPersonWithAddressById(id) =>
@@ -155,7 +160,6 @@ class ExternalAccess extends ServiceActor {
         AddressesDAO.getOrCreate(address.street, address.city)
       }
       val manyAddressByStreetNameAndCity = Future.sequence(addressesFutures).map(ManyAddressByStreetNameAndCity)
-      manyAddressByStreetNameAndCity.map(e => log.debug("{}", e))
       manyAddressByStreetNameAndCity pipeTo sender()
     case CreatePerson(name, age) =>
       val result = PeopleDAO.createPerson(name, age).map(CreatedPerson)

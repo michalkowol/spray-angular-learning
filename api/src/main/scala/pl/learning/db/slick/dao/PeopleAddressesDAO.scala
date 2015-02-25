@@ -1,8 +1,8 @@
-package pl.learning.db.dao
+package pl.learning.db.slick.dao
 
-import pl.learning.db.dto._
-import pl.learning.db.dto.Tables._
-import pl.learning.db.dto.Database._
+import pl.learning.db.slick.dto._
+import pl.learning.db.slick.dto.Tables._
+import pl.learning.db.slick.dto.Database._
 
 import slick.driver.PostgresDriver.api._
 

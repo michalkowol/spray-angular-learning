@@ -12,7 +12,7 @@ object ContentNegotiation {
 
 trait ContentNegotiation extends HttpService {
 
-  import pl.learning.sprayio.api.contentnegotiation.ContentNegotiation._
+  import ContentNegotiation._
   private val people = MList(
     Person("michal", 25, Seq(Address("Gliwice", "Chemiczna"), Address("Warszawa", "Pulawska")))
   )
