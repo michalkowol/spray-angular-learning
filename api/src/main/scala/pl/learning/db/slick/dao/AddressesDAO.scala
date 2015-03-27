@@ -1,5 +1,6 @@
 package pl.learning.db.slick.dao
 
+import pl.learning.db.{Address, City}
 import pl.learning.db.slick.dto._
 import pl.learning.db.slick.dto.Tables._
 import pl.learning.db.slick.dto.Database._
@@ -35,7 +36,7 @@ object AddressesDAO {
       val address = getByName(street, city)
       address.flatMap {
         case Some(address) => Future { (address, city) }
-        case None => createAddress(street, city.id).map(address => (address, city))
+        case None => createAddress(street, city.id.get).map(address => (address, city))
       }
     }
   }

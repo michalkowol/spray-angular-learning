@@ -5,6 +5,7 @@ import akka.event.LoggingReceive
 import com.paypal.cascade.akka.actor.ServiceActor
 import com.paypal.cascade.common.option._
 import com.typesafe.scalalogging.slf4j.StrictLogging
+import pl.learning.db
 import pl.learning.db.slick.dao.{AddressesDAO, PeopleAddressesDAO, PeopleDAO}
 import pl.learning.sprayio.api.NotFound
 import pl.learning.sprayio.api.pattern.{ActorRefMaker, CameoActor, PerRequestCreator}
@@ -14,16 +15,16 @@ import spray.routing.{HttpService, Route}
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-object DBAccess {
+object DBService {
   case class Address(city: String, street: String)
   case class Person(name: String, age: Int, addresses: Seq[Address])
 }
 
-trait DBAccess extends HttpService with StrictLogging with PerRequestCreator {
+trait DBService extends HttpService with StrictLogging with PerRequestCreator {
 
-  import pl.learning.sprayio.api.db.slick.DBAccess._
+  import DBService._
 
-  def db: Route =
+  def slick: Route =
     pathPrefix("db" / "slick" / "people") {
       get {
         path(IntNumber) { id =>
@@ -42,12 +43,6 @@ trait DBAccess extends HttpService with StrictLogging with PerRequestCreator {
           getPeople {
             ExternalAccess.GetPeople
           }
-        }
-      }
-    } ~ pathPrefix("db" / "anorm" / "people") {
-      get {
-        complete {
-          pl.learning.db.anorm.dao.PeopleDAO.peopleWithAddresses
         }
       }
     }
@@ -86,11 +81,11 @@ object PersonUnmapperRefMaker extends ActorRefMaker {
 }
 class PersonUnmapper(val originalSender: ActorRef) extends CameoActor {
 
-  import pl.learning.db.slick.dto._
+  import pl.learning.db._
 
   private val externalAccess = context.actorOf(Props[ExternalAccess], "ExternalAccess")
-  private var addresses = Option.empty[Seq[(Address, City)]]
-  private var input = Option.empty[DBAccess.Person]
+  private var addresses = Option.empty[Seq[(db.Address, City)]]
+  private var input = Option.empty[DBService.Person]
   private var person = Option.empty[Person]
 
   override def receive: Actor.Receive = LoggingReceive {
@@ -124,25 +119,27 @@ class PersonMapper(val originalSender: ActorRef) extends CameoActor {
     case q: ExternalAccess.GetPersonWithAddressById =>
       externalAccess ! q
     case ExternalAccess.PersonWithAddressById(Some((person, fullAddresses))) =>
-      val addresses = fullAddresses.map { case (a, c) => DBAccess.Address(a.street, c.name) }
-      replyAndStop(DBAccess.Person(person.name, person.age, addresses))
+      val addresses = fullAddresses.map { case (a, c) => DBService.Address(a.street, c.name) }
+      replyAndStop(DBService.Person(person.name, person.age, addresses))
     case ExternalAccess.PersonWithAddressById(None) =>
       replyAndStop(NotFound(s"Person with full address not found"))
   }
 }
 
 object ExternalAccess {
-  import pl.learning.db.slick.dto._
+
+  import pl.learning.db._
+
   case object GetPeople
   case class People(people: Seq[Person])
   case class GetPersonWithAddressById(id: Int)
-  case class PersonWithAddressById(result: Option[(Person, Seq[(Address, City)])])
-  case class CreatePersonWithAddress(person: DBAccess.Person)
-  case class GetManyAddressByStreetNameAndCity(addresses: Seq[DBAccess.Address])
-  case class ManyAddressByStreetNameAndCity(result: Seq[(Address, City)])
+  case class PersonWithAddressById(result: Option[(Person, Seq[(db.Address, City)])])
+  case class CreatePersonWithAddress(person: DBService.Person)
+  case class GetManyAddressByStreetNameAndCity(addresses: Seq[DBService.Address])
+  case class ManyAddressByStreetNameAndCity(result: Seq[(db.Address, City)])
   case class CreatePerson(name: String, age: Int)
   case class CreatedPerson(person: Person)
-  case class CreatePeronAddressRelation(person: Person, addresses: Seq[Address])
+  case class CreatePeronAddressRelation(person: Person, addresses: Seq[db.Address])
   case class CreatedPeronAddressRelation(ids: Seq[Int])
 }
 class ExternalAccess extends ServiceActor {

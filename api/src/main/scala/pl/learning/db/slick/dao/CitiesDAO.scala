@@ -1,5 +1,6 @@
 package pl.learning.db.slick.dao
 
+import pl.learning.db.City
 import pl.learning.db.slick.dto._
 import pl.learning.db.slick.dto.Tables._
 import pl.learning.db.slick.dto.Database._

@@ -2,39 +2,19 @@ package pl.learning.db.anorm.dao
 
 import anorm._
 import anorm.SqlParser._
+import pl.learning.db.Person
 import pl.learning.db.anorm.DB
-import pl.learning.sprayio.api.contentnegotiation.ContentNegotiation.{Address, Person}
+import pl.learning.sprayio.api.contentnegotiation.ContentNegotiation.{Address => CNAddress, Person => CNPerson}
 
-object People {
-  val id = int("id")
-  val name = str("name")
-  val age = int("age")
-}
-
-object Addresses {
-  val id = int("id")
-  val street = str("street")
-  val cityId = int("city_id")
-}
-
-object Cities {
-  val id = int("id")
-  val name = str("name")
-}
-
-object AddressesPeople {
-  val id = int("id")
-  val personId = int("person_id")
-  val addressId = int("address_id")
-}
+import scala.concurrent.{ExecutionContext, Future}
 
 object PeopleDAO {
 
   private val simpleParser = People.id ~ People.name ~ Addresses.street.? map flatten
 
   private val peopleWithAddressParser = (People.id ~ People.name ~ People.age ~ Addresses.street.? ~ str("city_name").?).map {
-    case id ~ name ~ age ~ Some(street) ~ Some(city) => (id, Person(name, age, Nil), Some(Address(street, city)))
-    case id ~ name ~ age ~ _ ~ _ => (id, Person(name, age, Nil), None)
+    case id ~ name ~ age ~ Some(street) ~ Some(city) => (id, CNPerson(name, age, Nil), Some(CNAddress(street, city)))
+    case id ~ name ~ age ~ _ ~ _ => (id, CNPerson(name, age, Nil), None)
   }
 
   private val peopleWithAddressParserForComprehension = for {
@@ -44,14 +24,14 @@ object PeopleDAO {
     streetOpt <- Addresses.street.?
     cityOpt <- str("city_name").?
   } yield {
-    val person = Person(name, age, Nil)
+    val person = CNPerson(name, age, Nil)
     (streetOpt, cityOpt) match {
-      case (Some(street), Some(city)) => (id, person, Some(Address(street, city)))
+      case (Some(street), Some(city)) => (id, person, Some(CNAddress(street, city)))
       case _ => (id, person, None)
     }
   }
 
-  def peopleWithAddresses: Iterable[Person] = DB.withConnection { implicit c =>
+  def peopleWithAddresses: Iterable[CNPerson] = DB.withConnection { implicit c =>
     val sql =
       SQL"""
          SELECT p.id, p.name, p.age, a.street, c.name AS city_name FROM people AS p
@@ -65,9 +45,30 @@ object PeopleDAO {
         case _ => None
       }
       val person = personWithAddress.head._2
-      Person(person.name, person.age, addresses)
+      CNPerson(person.name, person.age, addresses)
     }
 
     peopleWithAddresses
+  }
+
+  def list(implicit ec: ExecutionContext): Future[Iterable[Person]] = DB.withAsyncConnection { implicit c =>
+    val sql = SQL"SELECT * FROM people"
+    sql.as(People.person.*)
+  }
+
+  def getById(id: Long)(implicit ec: ExecutionContext): Future[Option[Person]] = DB.withAsyncConnection { implicit c =>
+    val sql = SQL"SELECT * FROM people WHERE id = $id"
+    sql.as(People.person.singleOpt)
+  }
+
+  def create(person: Person)(implicit ec: ExecutionContext): Future[Option[Person]] = {
+    val insert: Future[Option[Long]] = DB.withAsyncConnection { implicit c =>
+      val sql = SQL"INSERT INTO people(name, age) VALUES (${person.name}, ${person.age})"
+      sql.executeInsert()
+    }
+    insert.flatMap {
+      case Some(id) => getById(id)
+      case None => Future.failed(new Throwable("SQL insert error"))
+    }
   }
 }

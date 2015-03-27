@@ -2,17 +2,17 @@ name := "api"
 
 fork in run := true
 
-incOptions := incOptions.value.withNameHashing(true)
+incOptions := incOptions.value.withNameHashing(nameHashing = true)
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 jacoco.settings
 Revolver.settings
 Revolver.enableDebugging()
 
-val sprayVersion = "1.3.2"
+val sprayVersion = "1.3.3"
 val akkaVersion = "2.3.9"
-val cascadeVersion = "0.4.1"
-val jacksonVersion = "2.4.1"
+val cascadeVersion = "0.4.6"
+val jacksonVersion = "2.4.4"
 
 libraryDependencies += "org.scaldi" %% "scaldi-akka" % "0.4"
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.2"

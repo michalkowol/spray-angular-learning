@@ -1,7 +1,8 @@
 package pl.learning.sprayio
 
 import pl.learning.sprayio.api.contentnegotiation.ContentNegotiation
-import pl.learning.sprayio.api.db.slick.DBAccess
+import pl.learning.sprayio.api.db.slick.{DBService => SlickDBService}
+import pl.learning.sprayio.api.db.anorm.{DBService => AnormDBService}
 import pl.learning.sprayio.api.divide.DivideHttpService
 import pl.learning.sprayio.api.gathering.GatheringHttpService
 import pl.learning.sprayio.api.health.HealthHttpService
@@ -17,7 +18,8 @@ class Api
     with DivideHttpService
     with AggregatorHttpService
     with ContentNegotiation
-    with DBAccess
+    with SlickDBService
+    with AnormDBService
     with CameoRoute {
 
   def receive: Receive = runRoute {
@@ -27,7 +29,8 @@ class Api
         divideRoute ~
         aggregateRoute ~
         contentNegotiation ~
-        db ~
+        slick ~
+        anrom ~
         cameoRoute
     } ~
       staticResources
