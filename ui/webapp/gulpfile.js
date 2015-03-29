@@ -2,11 +2,10 @@
     'use strict';
 
     var gulp = require('gulp');
-    var react = require('gulp-react');
     var jade = require('gulp-jade');
+    var babel = require('gulp-babel');
     var usemin = require('gulp-usemin');
-    var jshint = require('gulp-jshint');
-    var browserify = require('gulp-browserify');
+    //var browserify = require('gulp-browserify');
     var stylus = require('gulp-stylus');
     var nib = require('nib');
     var sourcemaps = require('gulp-sourcemaps');
@@ -24,31 +23,22 @@
             .pipe(connect.reload());
     });
 
-    gulp.task('jshint', function () {
+    //gulp.task('browserify', function () {
+    //    return gulp.src('app/js/app.js')
+    //        .pipe(browserify({
+    //            insertGlobals: true,
+    //            debug: true
+    //        }))
+    //        .pipe(gulp.dest('dist/assets/js'))
+    //        .pipe(connect.reload());
+    //});
+
+    gulp.task('js', function () { // browserify
         return gulp.src('app/js/**/*.js')
-            .pipe(jshint())
-            .pipe(jshint.reporter('jshint-stylish'));
-    });
-
-    gulp.task('browserify', ['jshint'], function () {
-        return gulp.src('app/js/app.js')
-            .pipe(browserify({
-                insertGlobals: true,
-                debug: true
-            }))
+            .pipe(sourcemaps.init())
+            .pipe(babel())
+            .pipe(sourcemaps.write())
             .pipe(gulp.dest('dist/assets/js'))
-            .pipe(connect.reload());
-    });
-
-    gulp.task('js', ['react', 'jshint'], function () { // browserify
-        return gulp.src('app/**/*.js')
-            .pipe(gulp.dest('dist/assets'))
-            .pipe(connect.reload());
-    });
-
-    gulp.task('css', function () {
-        return gulp.src('app/**/*.css')
-            .pipe(gulp.dest('dist/assets'))
             .pipe(connect.reload());
     });
 
@@ -61,18 +51,10 @@
             .pipe(connect.reload());
     });
 
-    gulp.task('react', function () {
-        return gulp.src('app/**/*.jsx')
-            .pipe(sourcemaps.init())
-            .pipe(react())
-            .pipe(sourcemaps.write())
-            .pipe(gulp.dest('dist/assets'))
-            .pipe(connect.reload());;
-    });
-
     gulp.task('img', function () {
         return gulp.src('app/img/**')
-            .pipe(gulp.dest('dist/assets/img'));
+            .pipe(gulp.dest('dist/assets/img'))
+            .pipe(connect.reload());
     });
 
     gulp.task('usemin', function () {
@@ -102,12 +84,17 @@
         });
     });
 
-    gulp.task('clean', function (callback) {
-        del(['dist'], callback)
+    gulp.task('bower', function () {
+        return gulp.src('app/bower_components/**/*')
+            .pipe(gulp.dest('dist/assets/bower_components'));
     });
 
     gulp.task('clean-bower', function (callback) {
         del(['dist/assets/bower_components'], callback)
+    });
+
+    gulp.task('clean', function (callback) {
+        del(['dist'], callback)
     });
 
     gulp.task('watch', function () {
@@ -115,10 +102,9 @@
         gulp.watch(['app/**/*.css'], ['css']);
         gulp.watch(['app/**/*.js'], ['js']);
         gulp.watch(['app/**/*.styl'], ['stylus']);
-        gulp.watch(['app/**/*.jsx'], ['react']);
     });
 
-    gulp.task('build', ['img', 'jade', 'js', 'css', 'stylus']);
+    gulp.task('build', ['img', 'jade', 'js', 'stylus', 'bower']);
     gulp.task('dist', function (callback) {
         runSequence('clean', 'build', 'usemin', 'clean-bower', callback);
     });
