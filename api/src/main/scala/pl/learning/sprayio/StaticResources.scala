@@ -6,7 +6,7 @@ trait StaticResources extends HttpService {
 
   lazy val staticResources = {
     pathEndOrSingleSlash {
-      getFromResource("index.html")
+      getFromResource("dist/index.html")
     } ~ path("api" / "products") {
       getFromResource("assets/data/store-products.json")
     } ~ getFromResourceDirectory("assets")

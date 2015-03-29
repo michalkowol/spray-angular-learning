@@ -2,6 +2,7 @@
     'use strict';
 
     var gulp = require('gulp');
+    var react = require('gulp-react');
     var jade = require('gulp-jade');
     var usemin = require('gulp-usemin');
     var jshint = require('gulp-jshint');
@@ -19,7 +20,7 @@
     gulp.task('jade', function () {
         return gulp.src('app/**/*.jade')
             .pipe(jade({pretty: true}))
-            .pipe(gulp.dest('dist'))
+            .pipe(gulp.dest('dist/assets'))
             .pipe(connect.reload());
     });
 
@@ -35,19 +36,19 @@
                 insertGlobals: true,
                 debug: true
             }))
-            .pipe(gulp.dest('dist/js'))
+            .pipe(gulp.dest('dist/assets/js'))
             .pipe(connect.reload());
     });
 
-    gulp.task('js', ['jshint'], function () { // browserify
+    gulp.task('js', ['react', 'jshint'], function () { // browserify
         return gulp.src('app/**/*.js')
-            .pipe(gulp.dest('dist'))
+            .pipe(gulp.dest('dist/assets'))
             .pipe(connect.reload());
     });
 
     gulp.task('css', function () {
         return gulp.src('app/**/*.css')
-            .pipe(gulp.dest('dist'))
+            .pipe(gulp.dest('dist/assets'))
             .pipe(connect.reload());
     });
 
@@ -56,27 +57,36 @@
             .pipe(sourcemaps.init())
             .pipe(stylus({use: [nib()]}))
             .pipe(sourcemaps.write())
-            .pipe(gulp.dest('dist/css'))
+            .pipe(gulp.dest('dist/assets/css'))
             .pipe(connect.reload());
+    });
+
+    gulp.task('react', function () {
+        return gulp.src('app/**/*.jsx')
+            .pipe(sourcemaps.init())
+            .pipe(react())
+            .pipe(sourcemaps.write())
+            .pipe(gulp.dest('dist/assets'))
+            .pipe(connect.reload());;
     });
 
     gulp.task('img', function () {
         return gulp.src('app/img/**')
-            .pipe(gulp.dest('dist/img'));
+            .pipe(gulp.dest('dist/assets/img'));
     });
 
     gulp.task('usemin', function () {
-        return gulp.src('dist/**/*.html')
+        return gulp.src('dist/assets/**/*.html')
             .pipe(usemin({
                 css: [minifycss(), 'concat', prefix()],
                 js: [uglify()]
             }))
-            .pipe(gulp.dest('dist'));
+            .pipe(gulp.dest('dist/assets'));
     });
 
     gulp.task('connect', function () {
         return connect.server({
-            root: 'dist',
+            root: 'dist/assets',
             port: 8081,
             livereload: true,
             middleware: function () {
@@ -97,7 +107,7 @@
     });
 
     gulp.task('clean-bower', function (callback) {
-        del(['dist/bower_components'], callback)
+        del(['dist/assets/bower_components'], callback)
     });
 
     gulp.task('watch', function () {
@@ -105,6 +115,7 @@
         gulp.watch(['app/**/*.css'], ['css']);
         gulp.watch(['app/**/*.js'], ['js']);
         gulp.watch(['app/**/*.styl'], ['stylus']);
+        gulp.watch(['app/**/*.jsx'], ['react']);
     });
 
     gulp.task('build', ['img', 'jade', 'js', 'css', 'stylus']);

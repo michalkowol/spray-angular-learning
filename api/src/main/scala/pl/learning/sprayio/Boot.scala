@@ -18,7 +18,7 @@ object Boot {
 class BindListener extends ServiceActor {
   override def receive: Receive = {
     case bound: Http.Bound =>
-      log.info("{}", bound)
+      log.info("Bound to {}", bound.localAddress)
       context.stop(self)
     case error =>
       log.error("{}", error)
