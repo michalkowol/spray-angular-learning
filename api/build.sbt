@@ -1,7 +1,5 @@
 name := "api"
 
-fork in run := true
-
 incOptions := incOptions.value.withNameHashing(nameHashing = true)
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 

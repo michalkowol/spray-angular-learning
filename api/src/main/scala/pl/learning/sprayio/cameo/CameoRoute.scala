@@ -5,7 +5,7 @@ import akka.actor._
 import akka.event.LoggingReceive
 import com.paypal.cascade.akka.actor.ServiceActor
 import pl.learning.sprayio.api.gathering._
-import spray.routing.{HttpService, RequestContext}
+import spray.routing._
 
 object ActorPerRequest {
   def props(ctx: RequestContext, serviceA: ActorRef, serviceB: ActorRef, serviceC: ActorRef): Props =
@@ -31,7 +31,7 @@ trait CameoRoute extends HttpService {
   val serviceB = actorRefFactory.actorOf(Props[ServiceB])
   val serviceC = actorRefFactory.actorOf(Props[ServiceC])
 
-  lazy val cameoRoute = {
+  def cameoRoute: Route = {
     get {
       path("cameo") { ctx =>
         val actorPerRequest = actorRefFactory.actorOf(ActorPerRequest.props(ctx, serviceA, serviceB, serviceC))
