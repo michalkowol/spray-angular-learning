@@ -72,14 +72,21 @@
             port: 8081,
             livereload: true,
             middleware: function () {
-                return [ (function () {
+                return [(function () {
                     var proxy = require('proxy-middleware');
                     return proxy({
                         port: 8080,
                         pathname: '/api',
                         route: '/api'
                     });
-                })() ];
+                })(), (function () {
+                    var proxy = require('proxy-middleware');
+                    return proxy({
+                        port: 8080,
+                        pathname: '/js',
+                        route: '/js'
+                    });
+                })()];
             }
         });
     });
