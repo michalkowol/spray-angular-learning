@@ -9,12 +9,12 @@ trait StaticResources extends HttpService {
       getFromResource("assets/index.html")
     } ~ path("api" / "products") {
       getFromResource("assets/data/store-products.json")
-    } ~ path("js" / "js-fastopt.js") {
-      getFromResource("js-fastopt.js")
-    } ~ path("js" / "js-fastopt.js.map") {
-      getFromResource("js-fastopt.js.map")
-    } ~ path("js" / "js-opt.js") {
-      getFromResource("js-opt.js")
+    } ~ path("js" / "ui-fastopt.js") {
+      getFromResource("ui-fastopt.js")
+    } ~ path("js" / "ui-fastopt.js.map") {
+      getFromResource("ui-fastopt.js.map")
+    } ~ path("js" / "ui-opt.js") {
+      getFromResource("ui-opt.js")
     } ~ getFromResourceDirectory("assets")
   }
 }
