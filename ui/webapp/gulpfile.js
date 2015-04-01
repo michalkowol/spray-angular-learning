@@ -80,7 +80,7 @@
                         route: path
                     });
                 }
-                return [createProxy('/api'), createProxy('/js')];
+                return [createProxy('/api')];
             }
         });
     });
