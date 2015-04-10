@@ -1,0 +1,31 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+  body.
+    <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+      appId      : '616457961788323',
+      xfbml      : true,
+      version    : 'v2.3',
+      cookie: true
+      });
+    };
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    function checkLoginState() {
+      FB.getLoginStatus(function(response) {
+        console.log(response);
+        document.cookie="fb=" + response.authResponse.accessToken;
+    });
+    }
+    </script>
+    <div class="fb-login-button" onlogin="checkLoginState();" scope="public_profile,email" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false"></div>
+    <button type="button" onclick="checkLoginState()">Check!</button>

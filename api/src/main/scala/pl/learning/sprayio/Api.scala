@@ -7,6 +7,7 @@ import pl.learning.sprayio.api.divide.DivideHttpService
 import pl.learning.sprayio.api.gathering.GatheringHttpService
 import pl.learning.sprayio.api.health.HealthHttpService
 import pl.learning.sprayio.api.sameactorproblem.AggregatorHttpService
+import pl.learning.sprayio.api.sso.SSOHttpService
 import pl.learning.sprayio.cameo.CameoRoute
 import spray.routing.HttpServiceActor
 
@@ -20,6 +21,7 @@ class Api
     with ContentNegotiation
     with SlickDBService
     with AnormDBService
+    with SSOHttpService
     with CameoRoute {
 
   def receive: Receive = runRoute {
@@ -31,6 +33,7 @@ class Api
         contentNegotiation ~
         slick ~
         anrom ~
+        ssoRoute ~
         cameoRoute
     } ~
       staticResources

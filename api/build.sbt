@@ -9,7 +9,7 @@ Revolver.enableDebugging()
 
 val sprayVersion = "1.3.3"
 val akkaVersion = "2.3.9"
-val cascadeVersion = "0.4.6"
+val cascadeVersion = "0.4.8"
 val jacksonVersion = "2.4.4"
 
 libraryDependencies += "org.scaldi" %% "scaldi-akka" % "0.5.3"
@@ -27,10 +27,11 @@ libraryDependencies += "com.paypal" %% "cascade-json" % cascadeVersion
 libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-xml" % jacksonVersion
 libraryDependencies += "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % jacksonVersion
 libraryDependencies += "org.codehaus.woodstox" % "woodstox-core-asl" % "4.4.1"
-libraryDependencies += "com.typesafe.slick" %% "slick" % "3.0.0-RC2"
+libraryDependencies += "com.typesafe.slick" %% "slick" % "3.0.0-RC3"
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
 libraryDependencies += "com.typesafe.play" %% "anorm" % "2.4.0-M3"
-libraryDependencies += "com.zaxxer" % "HikariCP-java6" % "2.3.5"
+libraryDependencies += "com.zaxxer" % "HikariCP-java6" % "2.3.6"
+libraryDependencies += "org.pac4j" % "pac4j-oauth" % "1.7.0"  exclude("com.fasterxml.jackson.core", "jackson-databind")
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19" % "test"
