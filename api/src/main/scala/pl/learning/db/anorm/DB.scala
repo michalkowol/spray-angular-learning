@@ -49,7 +49,7 @@ object DB {
   }
 
   def withAsyncConnection[A](autocommit: Boolean)(block: Connection => A)(implicit ec: ExecutionContext): Future[A] = {
-    Future { withConnection(autocommit = true)(block) }
+    Future { withConnection(autocommit)(block) }
   }
 
   def withTransaction[A](block: Connection => A): A = {
